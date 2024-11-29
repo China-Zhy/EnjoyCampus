@@ -7,14 +7,13 @@ import lombok.ToString;
 
 /**
  * @author 张宏业
- * @apiNote 校区实体类
+ * @apiNote 口味实体类
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Campus {
-    private int id;             // 校区编号
-    private String name;        // 校区名称
-    private int schoolId;       // 所属学校
+public class Taste {
+    private int id;             // 口味编号
+    private String name;        // 口味名称
 }

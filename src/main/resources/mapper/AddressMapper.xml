@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nxu.dao.AddressMapper">
+
+    <!--插入地址-->
+    <insert id="insert">
+        insert into `address` values(null, #{user}, #{school.id}, #{campus.id}, #{building.id}, #{detail},
+        #{consignee}, #{phone}, #{type})
+    </insert>
+
+    <!--修改地址-->
+    <update id="update">
+        update `address`
+        <set>
+            <if test="school.id != '' and school.id != null">
+                school = #{school.id},
+            </if>
+            <if test="campus.id != '' and campus.id != null">
+                campus = #{campus.id},
+            </if>
+            <if test="building.id != '' and building.id != null">
+                building = #{building.id},
+            </if>
+            <if test="detail != '' and detail != null">
+                detail = #{detail},
+            </if>
+            <if test="consignee != '' and consignee != null">
+                consignee = #{consignee},
+            </if>
+            <if test="phone != '' and phone != null">
+                phone = #{phone},
+            </if>
+            <if test="type != '' and type != null">
+                type = #{type}
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    <!--删除地址-->
+    <delete id="delete">
+        delete from `address` where id = #{id}
+    </delete>
+
+    <!--定义结果映射-->
+    <resultMap id="addressInfo" type="nxu.entity.Address">
+        <id property="id" column="a_id"/>
+        <result property="user" column="user_id"/>
+        <!--映射关联的实体类-->
+        <association property="school" javaType="nxu.entity.School">
+            <id property="id" column="school_id"/>
+            <result property="name" column="s_name"/>
+        </association>
+        <association property="campus" javaType="nxu.entity.Campus">
+            <id property="id" column="campus_id"/>
+            <result property="name" column="c_name"/>
+        </association>
+        <association property="building" javaType="nxu.entity.Building">
+            <id property="id" column="building_id"/>
+            <result property="name" column="b_name"/>
+        </association>
+    </resultMap>
+
+    <!--查询某个地址-->
+    <select id="selectById" resultMap="addressInfo">
+        SELECT a.id as a_id, a.`user` as user_id, a.school as school_id, a.campus as campus_id, a.building as
+        building_id, a.detail, a.consignee, a.phone, a.type, s.`name` as s_name, c.`name` as c_name, b.`name` as b_name
+        FROM address a
+        JOIN school s ON s.id = a.school
+        JOIN campus c ON c.id = a.campus
+        JOIN building b ON b.id = a.school
+        WHERE a.id = #{id};
+    </select>
+
+    <!--查询某个用户的地址-->
+    <select id="selectByUser" resultMap="addressInfo">
+        SELECT a.id as a_id, a.`user` as user_id, a.school as school_id, a.campus as campus_id, a.building as
+        building_id, a.detail, a.consignee, a.phone, a.type, s.`name` as s_name, c.`name` as c_name, b.`name` as b_name
+        FROM address a
+        JOIN school s ON s.id = a.school
+        JOIN campus c ON c.id = a.campus
+        JOIN building b ON b.id = a.school
+        WHERE a.`user` = #{userId};
+    </select>
+
+
+</mapper>

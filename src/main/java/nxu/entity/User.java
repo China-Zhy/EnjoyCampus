@@ -22,7 +22,7 @@ public class User {
     private String phone;       // 手机号码
     private String password;    // 用户密码
     private String avatar;      // 头像路径
-    private int gender;         // 用户性别
+    private int gender;         // 用户性别(1-男，2-女)
     private Date register;      // 注册日期
     private String other;       // 其他信息
     private Identity identity;  // 身份类型
