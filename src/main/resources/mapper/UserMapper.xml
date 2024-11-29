@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nxu.dao.UserMapper">
+
+    <!--插入用户-->
+    <insert id="insertUser" parameterType="nxu.entity.User">
+        insert into `user` values(null, #{name}, #{phone}, #{password}, #{avatar}, #{gender}, NOW(), #{other},
+        #{identity.id})
+    </insert>
+
+    <!--删除用户-->
+    <delete id="deleteUser">
+        delete from `user` where id = #{id}
+    </delete>
+
+    <!--动态更新用户信息-->
+    <update id="updateUser">
+        update `user`
+        <set>
+            <if test="name != '' and name != null">
+                name = #{name},
+            </if>
+            <if test="phone != '' and phone != null">
+                phone = #{phone},
+            </if>
+            <if test="password != '' and password != null">
+                password = #{password},
+            </if>
+            <if test="avatar != '' and avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="gender != '' and gender != null">
+                gender = #{gender},
+            </if>
+            <if test="other != '' and other != null">
+                other = #{other},
+            </if>
+            <if test="identity.id != '' and identity.id != null">
+                type = #{identity.id}
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    <!--定义结果映射-->
+    <resultMap id="userInfo" type="nxu.entity.User">
+        <id property="id" column="id"/>
+        <!--映射关联的实体类-->
+        <association property="identity" javaType="nxu.entity.Identity">
+            <id property="id" column="i_id"/>
+            <result property="name" column="i_name"/>
+        </association>
+    </resultMap>
+
+    <!--通过ID查询用户-->
+    <select id="selectUserById" resultMap="userInfo">
+        select u.*, i.id as i_id, i.name as i_name from `user` u left join identity i on u.type = i.id
+        where u.id = ${id}
+    </select>
+
+    <!--通过登录查询用户-->
+    <select id="selectUserByLogin" resultMap="userInfo">
+        select u.*, i.id as i_id, i.name as i_name from `user` u left join identity i on u.type = i.id
+        where u.phone = #{phone}
+    </select>
+
+    <!--通过身份类型查询用户群-->
+    <select id="selectUserByIdentity" resultMap="userInfo">
+        select u.*, i.id as i_id, i.name as i_name from `user` u left join identity i on u.type = i.id
+        where u.type = #{identity}
+    </select>
+
+</mapper>
