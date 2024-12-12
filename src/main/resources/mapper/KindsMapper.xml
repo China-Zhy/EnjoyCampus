@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nxu.dao.KindsMapper">
+
+    <insert id="insertKinds">
+        insert into `kinds` values(null, #{name}, #{image})
+    </insert>
+
+    <delete id="deleteKinds">
+        delete from `kinds` where id = #{id}
+    </delete>
+
+    <update id="updateKinds">
+        update `kinds`
+        <set>
+            <if test="name != '' and name != null">
+                name = #{name},
+            </if>
+            <if test="image != '' and image != null">
+                image = #{image}
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    <select id="selectAllKinds" resultType="Kinds">
+        select * from `kinds`
+    </select>
+
+</mapper>
