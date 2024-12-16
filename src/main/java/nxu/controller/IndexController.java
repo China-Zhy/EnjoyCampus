@@ -18,12 +18,12 @@ public class IndexController {
         return "index";
     }
 
-    @GetMapping("/toLogin")
+    @GetMapping("/toUserLogin")
     public String toLogin() {
         return "userLogin";
     }
 
-    @GetMapping("/toRegister")
+    @GetMapping("/toUserRegister")
     public String toRegister() {
         return "userRegister";
     }

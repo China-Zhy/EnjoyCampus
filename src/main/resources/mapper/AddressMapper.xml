@@ -4,7 +4,7 @@
 
     <!--插入地址-->
     <insert id="insert">
-        insert into `address` values(null, #{user}, #{school.id}, #{campus.id}, #{building.id}, #{detail},
+        insert into `address` values(null, #{entity}, #{school.id}, #{campus.id}, #{building.id}, #{detail},
         #{consignee}, #{phone}, #{type})
     </insert>
 
@@ -12,6 +12,9 @@
     <update id="update">
         update `address`
         <set>
+            <if test="entity != '' and entity != null">
+                entity = #{entity},
+            </if>
             <if test="school.id != '' and school.id != null">
                 school = #{school.id},
             </if>
@@ -45,7 +48,7 @@
     <!--定义结果映射-->
     <resultMap id="addressInfo" type="nxu.entity.Address">
         <id property="id" column="a_id"/>
-        <result property="user" column="user_id"/>
+        <result property="entity" column="entity"/>
         <!--映射关联的实体类-->
         <association property="school" javaType="nxu.entity.School">
             <id property="id" column="school_id"/>
@@ -63,7 +66,7 @@
 
     <!--查询某个地址-->
     <select id="selectById" resultMap="addressInfo">
-        SELECT a.id as a_id, a.`user` as user_id, a.school as school_id, a.campus as campus_id, a.building as
+        SELECT a.id as a_id, a.entity, a.school as school_id, a.campus as campus_id, a.building as
         building_id, a.detail, a.consignee, a.phone, a.type, s.`name` as s_name, c.`name` as c_name, b.`name` as b_name
         FROM address a
         JOIN school s ON s.id = a.school
@@ -73,15 +76,14 @@
     </select>
 
     <!--查询某个用户的地址-->
-    <select id="selectByUser" resultMap="addressInfo">
-        SELECT a.id as a_id, a.`user` as user_id, a.school as school_id, a.campus as campus_id, a.building as
+    <select id="selectByEntity" resultMap="addressInfo">
+        SELECT a.id as a_id, a.entity, a.school as school_id, a.campus as campus_id, a.building as
         building_id, a.detail, a.consignee, a.phone, a.type, s.`name` as s_name, c.`name` as c_name, b.`name` as b_name
         FROM address a
         JOIN school s ON s.id = a.school
         JOIN campus c ON c.id = a.campus
         JOIN building b ON b.id = a.school
-        WHERE a.`user` = #{userId};
+        WHERE a.entity = #{entity};
     </select>
-
 
 </mapper>

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="nxu.dao.MealsMapper">
 
-    <select id="selectMeals" resultType="Meals">
+    <select id="selectMeals" resultType="nxu.entity.Meals">
         select * from `meals`
         <where>
             <if test="name != '' and name != null">
@@ -12,6 +12,50 @@
                 and type = #{type}
             </if>
         </where>
+    </select>
+
+    <insert id="insertMeals">
+        insert into `meals` values(null, #{name}, #{price}, #{materials}, #{flavors}, #{image}, #{heft}, #{detail},
+        #{type})
+    </insert>
+
+    <delete id="deleteMeals">
+        delete from `meals` where id = #{id}
+    </delete>
+
+    <update id="updateMeals">
+        update `meals`
+        <set>
+            <if test="name != '' and name != null">
+                name = #{name},
+            </if>
+            <if test="price != '' and price != null">
+                price = #{price},
+            </if>
+            <if test="materials != '' and materials != null">
+                materials = #{materials},
+            </if>
+            <if test="flavors != '' and flavors != null">
+                flavors = #{flavors},
+            </if>
+            <if test="image != '' and image != null">
+                image = #{image},
+            </if>
+            <if test="heft != '' and heft != null">
+                heft = #{heft},
+            </if>
+            <if test="detail != '' and detail != null">
+                detail = #{detail},
+            </if>
+            <if test="type != '' and type != null">
+                type = #{type},
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    <select id="selectOneMeal" resultType="Meals">
+        select * from `meals` where id = #{id}
     </select>
 
 </mapper>

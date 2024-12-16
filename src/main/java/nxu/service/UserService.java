@@ -3,6 +3,7 @@ package nxu.service;
 import nxu.entity.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 张宏业
@@ -57,4 +58,12 @@ public interface UserService {
      * @return 用户实体类集合
      */
     List<User> selectUserByIdentity(int identity);
+
+    /**
+     * 多条件查询用户
+     *
+     * @param conditions 条件map
+     * @return 用户实体类集合
+     */
+    List<User> selectUserByConditions(Map<String, Object> conditions);
 }

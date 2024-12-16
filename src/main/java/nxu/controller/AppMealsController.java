@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * @author 张宏业
- * @apiNote APP的点餐接口
+ * @apiNote APP的点餐业务接口
  */
 @RestController
 public class AppMealsController {

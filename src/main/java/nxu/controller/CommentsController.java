@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -24,10 +24,9 @@ public class CommentsController {
 
     @GetMapping("/getComments")
     @ResponseBody
-    public List<Comments> getComments(Map<String, Object> map, @RequestParam("pageNum") int pageNum) {
-        System.out.println(map);
-        System.out.println(pageNum);
-        return commentsService.selectComments(map).getList();
+    public List<Comments> getComments(@RequestBody Map<String, Object> params) {
+        System.out.println(params);
+        return commentsService.selectComments(params).getList();
     }
 
     @PostMapping("/addComments")

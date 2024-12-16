@@ -1,12 +1,15 @@
 package nxu.service.impl;
 
+import nxu.dao.AddressMapper;
 import nxu.dao.UserMapper;
+import nxu.entity.Address;
 import nxu.entity.User;
 import nxu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 张宏业
@@ -17,6 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private AddressMapper addressMapper;
 
     /**
      * 添加用户
@@ -59,7 +65,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User selectUserById(int id) {
-        return userMapper.selectUserById(id);
+        User user = userMapper.selectUserById(id);
+        if (user != null) {
+            List<Address> addresses = addressMapper.selectByEntity(user.getId());
+            user.setAddresses(addresses);
+        }
+        return user;
     }
 
     /**
@@ -70,7 +81,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User selectUserByLogin(String phone) {
-        return userMapper.selectUserByLogin(phone);
+        User user = userMapper.selectUserByLogin(phone);
+        if (user != null) {
+            List<Address> addresses = addressMapper.selectByEntity(user.getId());
+            user.setAddresses(addresses);
+        }
+        return user;
     }
 
     /**
@@ -81,6 +97,31 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<User> selectUserByIdentity(int identity) {
-        return userMapper.selectUserByIdentity(identity);
+        List<User> users = userMapper.selectUserByIdentity(identity);
+        if (users != null) {
+            for (User user : users) {
+                List<Address> addresses = addressMapper.selectByEntity(user.getId());
+                user.setAddresses(addresses);
+            }
+        }
+        return users;
+    }
+
+    /**
+     * 多条件查询用户
+     *
+     * @param conditions 条件map
+     * @return 用户实体类集合
+     */
+    @Override
+    public List<User> selectUserByConditions(Map<String, Object> conditions) {
+        List<User> users = userMapper.selectUserByConditions(conditions);
+        if (users != null) {
+            for (User user : users) {
+                List<Address> addresses = addressMapper.selectByEntity(user.getId());
+                user.setAddresses(addresses);
+            }
+        }
+        return users;
     }
 }

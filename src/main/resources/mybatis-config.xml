@@ -14,6 +14,11 @@
         <package name="nxu.entity"/>
     </typeAliases>
 
+    <!-- 时间转换器 -->
+    <typeHandlers>
+        <typeHandler handler="nxu.utils.LocalDateTimeTypeHandler"/>
+    </typeHandlers>
+
     <!-- 配置PageHelper拦截器 -->
     <plugins>
         <plugin interceptor="com.github.pagehelper.PageInterceptor">
@@ -42,6 +47,7 @@
         <mapper resource="mapper/MealsMapper.xml"/>
         <mapper resource="mapper/KindsMapper.xml"/>
         <mapper resource="mapper/CommentsMapper.xml"/>
+        <mapper resource="mapper/IdentityMapper.xml"/>
     </mappers>
 
 </configuration>

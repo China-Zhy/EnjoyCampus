@@ -1,4 +1,5 @@
 import com.github.pagehelper.PageInfo;
+import nxu.entity.Address;
 import nxu.entity.Meals;
 import nxu.service.MealsService;
 import org.junit.Test;
@@ -26,6 +27,34 @@ public class MealsTest extends BaseTest {
         for (Meals meal : meals.getList()) {
             System.out.println(meal);
         }
+    }
+
+    @Test
+    public void test2() {
+        Address address = new Address();
+        address.setId(2);
+        int i = mealsService.insertMeals(new Meals(0, "测试餐品", 8.8, "一堆原料", "1-2-3", "xxx.png", 2, "一份测试餐品", 2, address));
+        System.out.println(i);
+    }
+
+    @Test
+    public void test3() {
+        Address address = new Address();
+        address.setId(3);
+        int i = mealsService.updateMeals(new Meals(4, "新测试餐品", 9.9, "新一堆原料", "1-2-3-4", "happy.png", 1, "新一份测试餐品", 1, address));
+        System.out.println(i);
+    }
+
+    @Test
+    public void test4() {
+        int i = mealsService.deleteMeals(5);
+        System.out.println(i);
+    }
+
+    @Test
+    public void test5() {
+        Meals meals = mealsService.selectOneMeal(1);
+        System.out.println(meals);
     }
 
 }

@@ -20,7 +20,7 @@ public class AddressTest extends BaseTest {
     @Test
     public void test1() {
         Address address = new Address();
-        address.setUser(5);
+        address.setEntity(5);
         address.setSchool(new School(1, ""));
         address.setCampus(new Campus(1, "", 1));
         address.setBuilding(new Building(1, "", 1));
@@ -42,7 +42,7 @@ public class AddressTest extends BaseTest {
     public void test3() {
         Address address = new Address();
         address.setId(4);
-        address.setUser(4);
+        address.setEntity(4);
         address.setSchool(new School(2, ""));
         address.setCampus(new Campus(5, "", 2));
         address.setBuilding(new Building(30, "", 5));
@@ -62,7 +62,7 @@ public class AddressTest extends BaseTest {
 
     @Test
     public void test5() {
-        List<Address> addresses = addressService.selectByUser(5);
+        List<Address> addresses = addressService.selectByEntity(5);
         for (Address address : addresses) {
             System.out.println(address);
         }

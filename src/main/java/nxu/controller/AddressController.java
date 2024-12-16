@@ -5,7 +5,6 @@ import nxu.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.List;
  * @apiNote 地址控制器
  */
 @Controller
-@RequestMapping("/address")
 public class AddressController {
 
     @Autowired
@@ -24,7 +22,7 @@ public class AddressController {
     @GetMapping("/getAllAddress")
     @ResponseBody
     public List<Address> getAllAddress(int userId) {
-        return addressService.selectByUser(userId);
+        return addressService.selectByEntity(userId);
     }
 
     @GetMapping("/getOneAddress")

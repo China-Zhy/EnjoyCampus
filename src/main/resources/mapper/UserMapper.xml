@@ -54,20 +54,44 @@
 
     <!--通过ID查询用户-->
     <select id="selectUserById" resultMap="userInfo">
-        select u.*, i.id as i_id, i.name as i_name from `user` u left join identity i on u.type = i.id
+        select u.*, i.id as i_id, i.name as i_name
+        from `user` u left join identity i on u.type = i.id
         where u.id = ${id}
     </select>
 
     <!--通过登录查询用户-->
     <select id="selectUserByLogin" resultMap="userInfo">
-        select u.*, i.id as i_id, i.name as i_name from `user` u left join identity i on u.type = i.id
+        select u.*, i.id as i_id, i.name as i_name
+        from `user` u left join identity i on u.type = i.id
         where u.phone = #{phone}
     </select>
 
     <!--通过身份类型查询用户群-->
     <select id="selectUserByIdentity" resultMap="userInfo">
-        select u.*, i.id as i_id, i.name as i_name from `user` u left join identity i on u.type = i.id
-        where u.type = #{identity}
+        select u.*, i.id as i_id, i.name as i_name
+        from `user` u left join identity i on u.type = i.id
+        <where>
+            <if test="identity != 0">
+                u.type = #{identity}
+            </if>
+        </where>
+    </select>
+
+    <!--通过身份类型查询用户群-->
+    <select id="selectUserByConditions" resultMap="userInfo">
+        select u.*, i.id as i_id, i.name as i_name
+        from `user` u left join identity i on u.type = i.id
+        <where>
+            <if test="identity != '' and identity != null and identity != 0 ">
+                u.type = #{identity}
+            </if>
+            <if test="phone != '' and phone != null">
+                and phone = #{phone}
+            </if>
+            <if test="register != '' and register != null">
+                and register = #{register}
+            </if>
+        </where>
     </select>
 
 </mapper>

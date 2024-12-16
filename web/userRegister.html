@@ -14,7 +14,8 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -84,7 +85,8 @@
 
                                     <div class="col-12">
                                         <label for="phone" class="form-label">手机号码</label>
-                                        <input type="text" name="phone" class="form-control" id="phone" required pattern="^1[3-9]\d{9}$" maxlength="11">
+                                        <input class="form-control" id="phone" maxlength="11" name="phone" pattern="^1[3-9]\d{9}$"
+                                               required type="text">
                                         <div class="invalid-feedback">请输入正确的手机号码！</div>
                                     </div>
 
@@ -92,32 +94,25 @@
                                         <label for="password" class="form-label">用户密码</label>
                                         <div class="input-group has-validation">
                                             <!--<span class="input-group-text" id="inputGroupPrepend">@</span>-->
-                                            <input type="password" name="password" class="form-control" id="password" required pattern="^[a-zA-Z0-9\S]{6,16}$" minlength="6" maxlength="16">
+                                            <input class="form-control" id="password" maxlength="16" minlength="6"
+                                                   name="password" pattern="^[a-zA-Z0-9\S]{6,16}$" required
+                                                   type="password">
                                             <div class="invalid-feedback">请输入6-16位合法的密码！</div>
                                         </div>
                                     </div>
 
                                     <div class="col-12">
                                         <label for="password2" class="form-label">确认密码</label>
-                                        <input type="password" name="password" class="form-control" id="password2" required pattern="^[a-zA-Z0-9\S]{6,16}$" minlength="6" maxlength="16">
+                                        <input class="form-control" id="password2" maxlength="16" minlength="6"
+                                               name="password" pattern="^[a-zA-Z0-9\S]{6,16}$" required type="password">
                                         <div class="invalid-feedback">请输入6-16位合法的密码！</div>
                                     </div>
-
-                                    <!--
-                                    <div class="col-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" name="terms" type="checkbox" value="" id="acceptTerms" required>
-                                            <label class="form-check-label" for="acceptTerms">I agree and accept the <a href="#">terms and conditions</a></label>
-                                            <div class="invalid-feedback">You must agree before submitting.</div>
-                                        </div>
-                                    </div>
-                                    -->
 
                                     <div class="col-12">
                                         <button class="btn btn-primary w-100" type="submit">注 册</button>
                                     </div>
                                     <div class="col-12">
-                                        <p class="small mb-0">您已拥有账号？<a href="/toLogin">点我前往登录！</a></p>
+                                        <p class="small mb-0">您已拥有账号？<a href="/toUserLogin">点我前往登录！</a></p>
                                     </div>
                                 </form>
 
@@ -133,8 +128,6 @@
 
     </div>
 </main><!-- End #main -->
-
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
 <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
@@ -207,7 +200,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/user/doRegister',
+                url: '/doUserRegister',
                 data: {
                     "name": name,
                     "phone": phone,
@@ -238,7 +231,7 @@
                     }
                 },
                 error: function () {
-                    $('#redInfo').val('系统提示：Ajax请求出错了哦！');
+                    $('#redInfo').text('系统提示：Ajax请求出错了哦！');
                     redAlert.show();
                     setTimeout(function () {
                         redAlert.hide();

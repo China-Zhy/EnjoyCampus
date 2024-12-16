@@ -46,8 +46,8 @@ public interface AddressMapper {
     /**
      * 查询某个用户的地址
      *
-     * @param userId 用户编号
+     * @param entity 实体编号
      * @return 地址实体类集合
      */
-    List<Address> selectByUser(@Param("userId") int userId);
+    List<Address> selectByEntity(@Param("entity") int entity);
 }

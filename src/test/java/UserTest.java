@@ -4,6 +4,8 @@ import nxu.service.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public class UserTest extends BaseTest {
 
     @Test
     public void test3() {
-        User user1 = userService.selectUserById(6);
+        User user1 = userService.selectUserById(5);
         System.out.println("通过ID查询1：" + user1);
         User user2 = userService.selectUserById(0);
         System.out.println("通过ID查询2：" + user2);
@@ -41,7 +43,7 @@ public class UserTest extends BaseTest {
 
     @Test
     public void test4() {
-        User user1 = userService.selectUserByLogin("15012345678");
+        User user1 = userService.selectUserByLogin("18201521341");
         System.out.println("通过登录查询1：" + user1);
         User user2 = userService.selectUserByLogin("18812345678");
         System.out.println("通过登录查询2：" + user2);
@@ -49,9 +51,28 @@ public class UserTest extends BaseTest {
 
     @Test
     public void test5() {
-        List<User> users = userService.selectUserByIdentity(5);
+        List<User> users = userService.selectUserByIdentity(0);
         for (User user : users) {
             System.out.println(user);
         }
+    }
+
+    @Test
+    public void test6() throws ParseException {
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("register", "2024-11-15");
+        map.put("phone", "18812345678");
+        map.put("identity", 5);
+        List<User> users = userService.selectUserByConditions(map);
+        for (User user : users) {
+            System.out.println(user);
+        }
+    }
+
+    @Test
+    public void test7() {
+        int i = userService.deleteUser(6);
+        System.out.println(i);
     }
 }

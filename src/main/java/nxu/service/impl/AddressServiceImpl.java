@@ -69,7 +69,7 @@ public class AddressServiceImpl implements AddressService {
      * @return 地址实体类集合
      */
     @Override
-    public List<Address> selectByUser(int userId) {
-        return addressMapper.selectByUser(userId);
+    public List<Address> selectByEntity(int userId) {
+        return addressMapper.selectByEntity(userId);
     }
 }

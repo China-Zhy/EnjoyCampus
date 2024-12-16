@@ -4,6 +4,7 @@ import nxu.entity.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 张宏业
@@ -58,4 +59,12 @@ public interface UserMapper {
      * @return 用户实体类集合
      */
     List<User> selectUserByIdentity(@Param("identity") int identity);
+
+    /**
+     * 多条件查询用户
+     *
+     * @param conditions 条件map
+     * @return 用户实体类集合
+     */
+    List<User> selectUserByConditions(Map<String, Object> conditions);
 }

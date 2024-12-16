@@ -3,12 +3,15 @@ package nxu.controller;
 import jakarta.servlet.http.HttpSession;
 import nxu.entity.Identity;
 import nxu.entity.User;
+import nxu.service.IdentityService;
 import nxu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,17 +19,19 @@ import java.util.Map;
  * @apiNote 用户控制器
  */
 @Controller
-@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/doLogin")
+    @Autowired
+    private IdentityService identityService;
+
+    @PostMapping("/doUserLogin")
     @ResponseBody
     public Map<String, Object> login(HttpSession session, String phone, String password) {
         Map<String, Object> map = new HashMap<>();
-        System.out.println(phone + " " + password);
+
         User user = userService.selectUserByLogin(phone);
         if (user == null) {
             map.put("status", 1);
@@ -37,6 +42,8 @@ public class UserController {
                 map.put("status", 2);
                 map.put("message", "系统提示：登录成功，欢迎您！");
                 session.setAttribute("user", user);     // 把用户数据存入Session
+                List<Identity> identities = identityService.selectAll();
+                session.setAttribute("identityList", identities);   // 把身份类型也存入Session
             } else {
                 map.put("status", 3);
                 map.put("message", "系统提示：输入的密码不正确！");
@@ -45,7 +52,7 @@ public class UserController {
         return map;
     }
 
-    @GetMapping("/doLogout")
+    @GetMapping("/doUserLogout")
     @ResponseBody
     public Map<String, Object> logout(HttpSession session) {
         Map<String, Object> map = new HashMap<>();
@@ -55,14 +62,12 @@ public class UserController {
         return map;
     }
 
-    @PostMapping("/doRegister")
+    @PostMapping("/doUserRegister")
     @ResponseBody
     public Map<String, Object> register(@ModelAttribute User user) {
         Map<String, Object> map = new HashMap<>();
 
         User isExists = userService.selectUserByLogin(user.getPhone());
-
-        System.out.println("注册信息：" + user);
 
         if (isExists != null) {
             map.put("status", 1);
@@ -81,6 +86,103 @@ public class UserController {
                 map.put("status", 3);
                 map.put("message", "系统提示：注册失败！请联系系统管理员~");
             }
+        }
+        return map;
+    }
+
+    @GetMapping("/goToUserSelect")
+    public String goToUserSelect(Model model) {
+
+        List<User> users = userService.selectUserByIdentity(0);
+        model.addAttribute("users", users);
+
+        List<Identity> identities = identityService.selectAll();
+        model.addAttribute("identities", identities);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("phone", "");
+        map.put("identity", 0);
+        map.put("register", "");
+        model.addAttribute("params", map);
+
+        return "userManager";
+    }
+
+    @PostMapping("/doSelectUser")
+    public String doSelectUser(@RequestParam Map<String, Object> params, Model model) {
+
+        List<User> users = userService.selectUserByConditions(params);
+
+        model.addAttribute("users", users);
+
+        List<Identity> identities = identityService.selectAll();
+        model.addAttribute("identities", identities);
+
+        int identity = Integer.parseInt(params.get("identity").toString());
+        params.remove("identity");
+        params.put("identity", identity);
+
+        model.addAttribute("params", params);
+
+        return "userManager";
+    }
+
+    @PostMapping("/getDetailUser")
+    @ResponseBody
+    public User getDetailUser(int id) {
+        return userService.selectUserById(id);
+    }
+
+    @PostMapping("/doUpdateUser")
+    @ResponseBody
+    public Map<String, Object> doUpdateUser(@RequestParam Map<String, Object> params) {
+        Map<String, Object> map = new HashMap<>();
+        User user = new User();
+        if (params.get("id") != null) {
+            user.setId(Integer.parseInt(params.get("id").toString()));
+        }
+        if (params.get("name") != null) {
+            user.setName(params.get("name").toString());
+        }
+        if (params.get("phone") != null) {
+            user.setPhone(params.get("phone").toString());
+        }
+        if (params.get("password") != null) {
+            user.setPassword(params.get("password").toString());
+        }
+        if (params.get("identity") != null) {
+            user.setIdentity(new Identity(Integer.parseInt(params.get("identity").toString()), ""));
+        }
+        if (params.get("gender") != null) {
+            user.setGender(Integer.parseInt(params.get("gender").toString()));
+        }
+        if (params.get("other") != null) {
+            user.setOther(params.get("other").toString());
+        }
+        int i = userService.updateUser(user);
+        if (i > 0) {
+            map.put("status", true);
+            map.put("message", "系统提示：修改成功，该用户数据已更新！");
+        } else {
+            map.put("status", false);
+            map.put("message", "系统提示：修改失败，该用户数据未更改！");
+        }
+        return map;
+    }
+
+    @PostMapping("/doDeleteUser")
+    @ResponseBody
+    public Map<String, Object> doDeleteUser(int id) {
+        System.out.println("删除用户传过来的参数：" + id);
+        Map<String, Object> map = new HashMap<>();
+        int result = userService.deleteUser(id);
+        System.out.println("删除结果：" + result);
+        if (result > 0) {
+            map.put("status", true);
+            map.put("message", "系统提示：删除成功，该用户已被删除！");
+        } else {
+            map.put("status", false);
+            map.put("message", "系统提示：删除失败，该用户尚未被删除！");
         }
         return map;
     }

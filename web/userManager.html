@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>表格模板</title>
+    <meta content="乐享校园-表格模板" name="description">
+    <meta content="乐享校园" name="keywords">
+
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!--提示框(开始)-->
+<div class="alert alert-primary alert-dismissible fade show col-lg-3 myAlert" id="blueAlert" role="alert">
+    <i class="bi bi-star me-1"></i>
+    <span id="blueInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-success alert-dismissible fade show col-lg-3 myAlert" id="greenAlert" role="alert">
+    <i class="bi bi-check-circle me-1"></i>
+    <span id="greenInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-danger alert-dismissible fade show col-lg-3 myAlert" id="redAlert" role="alert">
+    <i class="bi bi-exclamation-octagon me-1"></i>
+    <span id="redInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+<!--提示框(结束)-->
+
+<div th:replace="systemHeader :: myHeader"></div>
+
+<div th:replace="systemSidebar :: mySidebar"></div>
+
+<main class="main" id="main">
+
+    <div class="pagetitle">
+        <h1>用户管理</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+                <li class="breadcrumb-item">用户管理</li>
+                <li class="breadcrumb-item active">用户数据表</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🟣🟢🟡查询条件</h5>
+                        <!-- 条件查询的表单 -->
+                        <form action="/doSelectUser" method="post">
+                            <div class="row mb-3">
+
+                                <label class="col-sm-1 col-form-label" for="inputText">🟠手机号码</label>
+                                <div class="col-sm-2">
+                                    <input class="form-control" id="inputText" name="phone" th:value="${params.phone}"
+                                           type="text">
+                                </div>
+
+                                <label class="col-sm-1 col-form-label" for="inputSelect">🟢身份类型</label>
+                                <div class="col-sm-2">
+                                    <select aria-label="Default select example" class="form-select" id="inputSelect"
+                                            name="identity">
+                                        <option value="0">未指定人员类型</option>
+                                        <option th:each="identity : ${identities}" th:selected="${params.identity == identity.id}"
+                                                th:text="${identity.name}"
+                                                th:value="${identity.id}"></option>
+                                    </select>
+                                </div>
+
+                                <label class="col-sm-1 col-form-label" for="inputDate">🟡注册日期</label>
+                                <div class="col-sm-2">
+                                    <input class="form-control" id="inputDate" name="register" th:value="${params.register}"
+                                           type="date">
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary" type="submit">查询</button>
+                                    <button class="btn btn-secondary" type="reset">重置</button>
+                                </div>
+
+                            </div>
+                        </form><!-- End 条件查询的表单 -->
+
+                        <!-- 数据表格 -->
+                        <table class="table datatable">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">昵称</th>
+                                <th scope="col">手机号码</th>
+                                <th scope="col">密码</th>
+                                <th scope="col">头像</th>
+                                <th scope="col">性别</th>
+                                <th scope="col">注册日期</th>
+                                <th scope="col">其他信息</th>
+                                <th scope="col">身份类型</th>
+                                <th scope="col">相关操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="user : ${users}" th:id="'user' + ${user.id}">
+                                <th scope="row" th:text="${user.id}"></th>
+                                <td th:text="${user.name}"></td>
+                                <td th:text="${user.phone}"></td>
+                                <td th:text="${user.password}"></td>
+                                <td>
+                                    <img alt="头像" th:height="30" th:src="${user.avatar}" th:width="30"
+                                         title="用户头像"/>
+                                </td>
+                                <td th:text="${user.gender} == 1 ? '男':'女' "></td>
+                                <td th:text="${#dates.format(user.register, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${user.other}"></td>
+                                <td th:text="${user.identity.name}"></td>
+                                <td>
+                                    <button class="btn btn-success btn-sm" data-bs-target="#scrollingModal" data-bs-toggle="modal"
+                                            th:onclick="showDetail([[${user.id}]])" type="button">详情
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" data-bs-target="#modalDialogScrollable" data-bs-toggle="modal"
+                                            th:onclick="showUpdate([[${user.id}]])"
+                                            type="button">修改
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" data-bs-target="#verticalycentered" data-bs-toggle="modal"
+                                            th:onclick="showDelete([[${user.id}]])" type="button">
+                                        删除
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table><!-- End 数据表格 -->
+
+                        <!-- 详情弹窗 -->
+                        <div class="modal fade" id="scrollingModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">用户的详细信息</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="..." class="card-img-top" id="detailAvatar"
+                                                 src="assets/img/card.jpg">
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户编号:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailId" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户昵称:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailName" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">手机号码:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailPhone" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户密码:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailPassword" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">注册日期:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailRegister" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">身份类型:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailIdentity" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">其他信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" disabled
+                                                          id="detailOther" style="height: 100px"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 详情弹窗-->
+
+                        <!-- 修改弹窗 -->
+                        <div class="modal fade" id="modalDialogScrollable" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">修改Xxx的信息</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="..." class="card-img-top" id="updateAvatar"
+                                                 src="assets/img/card.jpg">
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户编号：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="updateId" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户昵称：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updateName" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">手机号码：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updatePhone" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户密码：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updatePassword" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">注册日期：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="updateRegister" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">身份类型：</label>
+                                            <div class="col-sm-9">
+                                                <select aria-label="Default select example" class="form-select"
+                                                        id="updateIdentity">
+                                                    <option th:each="identity : ${session.identityList}"
+                                                            th:text="${identity.name}"
+                                                            th:value="${identity.id}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">其他信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" id="updateOther"
+                                                          style="height: 100px"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <fieldset class="row mb-3">
+                                            <legend class="col-form-label col-sm-3 pt-0">用户性别：</legend>
+                                            <div class="col-sm-9">
+                                                <input class="form-check-input" id="genderA" name="gender"
+                                                       type="radio" value="1">
+                                                <label class="form-check-label" for="genderA">男</label>
+                                                <input class="form-check-input" id="genderB" name="gender"
+                                                       style="margin-left: 20px;" type="radio" value="2">
+                                                <label class="form-check-label" for="genderB">女</label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doUpdate()"
+                                                type="button">保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 修改弹窗 -->
+
+                        <!-- 删除弹窗 -->
+                        <div class="modal fade" id="verticalycentered" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">⛔删除操作不可撤销，请谨慎操作！</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="..." class="card-img-top" src="assets/img/card.jpg">
+                                        </div>
+                                        <input hidden="hidden" id="deleteId" type="number">
+                                        您是否真的打算删除这条数据？？？
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doDelete()"
+                                                type="button">确认
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 删除弹窗 -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<div th:replace="systemFooter :: myFooter"></div>
+
+<div th:replace="systemFooter :: myGoToUp"></div>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
+<script src="assets/js/jquery.js"></script>
+<script>
+    function showDetail(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/getDetailUser',
+            data: {
+                "id": id
+            },
+            success: function (data) {
+
+                $('#detailAvatar').attr('src', data.avatar);
+                $('#detailId').val(data.id);
+                $('#detailName').val(data.name);
+                $('#detailPhone').val(data.phone);
+                $('#detailPassword').val(data.password);
+                $('#detailRegister').val(data.register);
+                $('#detailIdentity').val(data.identity.id);
+                $('#detailOther').val(data.other);
+
+            },
+            error: function () {
+                $('#redInfo').val('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function showUpdate(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/getDetailUser',
+            data: {
+                "id": id
+            },
+            success: function (data) {
+
+                $('#updateAvatar').attr('src', data.avatar);
+                $('#updateId').val(data.id);
+                $('#updateName').val(data.name);
+                $('#updatePhone').val(data.phone);
+                $('#updatePassword').val(data.password);
+                $('#updateRegister').val(data.register);
+                $('#updateOther').val(data.other);
+                $('#updateIdentity').val(data.identity.id);
+                if (parseInt(data.gender) === 1) {
+                    $('#genderA').prop("checked", true);
+                } else {
+                    $('#genderB').prop("checked", true);
+                }
+
+            },
+            error: function () {
+                $('#redInfo').val('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function doUpdate() {
+
+        let redAlert = $('#redAlert');      // 警告的弹出层(使用比较多，单独定义了一个变量)
+
+        let phone = $('#updatePhone').val();
+        let password = $('#updatePassword').val();
+
+        let phonePattern = /^1[3-9]\d{9}$/;
+        let passwordPattern = /^[a-zA-Z0-9\S]{6,16}$/;
+
+        if (!phonePattern.test(phone)) {
+            $('#redInfo').text('手机号码格式不对哦！');
+            redAlert.show();
+            setTimeout(function () {
+                redAlert.hide();
+            }, 3000);
+            return;
+        }
+
+        if (!passwordPattern.test(password)) {
+            $('#redInfo').text('用户密码格式不对哦！');
+            redAlert.show();
+            setTimeout(function () {
+                redAlert.hide();
+            }, 3000);
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/doUpdateUser',
+            data: {
+                "phone": phone,
+                "password": password,
+                "id": $('#updateId').val(),
+                "name": $('#updateName').val(),
+                "identity": $('#updateIdentity').val(),
+                "other": $('#updateOther').val(),
+                "gender": $("input[type='radio'][name='gender']:checked").val(),
+                "avatar": "18201521341.jpg"
+            },
+            success: function (data) {
+                console.log(data)
+                if (data.status) {
+                    // 这里更新一下表格中的对应的数据
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function showDelete(id) {
+        $('#deleteId').val(id);
+    }
+
+    function doDelete() {
+
+        $.ajax({
+            type: 'POST',
+            url: '/doDeleteUser',
+            data: {
+                "id": $('#deleteId').val()
+            },
+            success: function (data) {
+                console.log(data)
+                if (data.status) {
+                    $('#user' + $('#deleteId').val()).remove();     // 移除被删除的数据行
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').val('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+</script>
