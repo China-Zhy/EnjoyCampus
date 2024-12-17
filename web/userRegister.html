@@ -85,7 +85,8 @@
 
                                     <div class="col-12">
                                         <label for="phone" class="form-label">手机号码</label>
-                                        <input class="form-control" id="phone" maxlength="11" name="phone" pattern="^1[3-9]\d{9}$"
+                                        <input class="form-control" id="phone" maxlength="11" name="phone"
+                                               pattern="^1[3-9]\d{9}$"
                                                required type="text">
                                         <div class="invalid-feedback">请输入正确的手机号码！</div>
                                     </div>
@@ -220,7 +221,7 @@
                         greenAlert.show();
                         setTimeout(function () {
                             greenAlert.hide();
-                            window.location.href = "/toLogin";
+                            window.location.href = "/toUserLogin";
                         }, 2000);
                     } else if (data.status === 3) {
                         $('#redInfo').text(data.message);

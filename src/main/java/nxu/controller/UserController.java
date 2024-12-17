@@ -53,13 +53,10 @@ public class UserController {
     }
 
     @GetMapping("/doUserLogout")
-    @ResponseBody
-    public Map<String, Object> logout(HttpSession session) {
-        Map<String, Object> map = new HashMap<>();
+    public String logout(HttpSession session) {
         session.invalidate();
-        map.put("status", true);
-        map.put("message", "系统提示：您已成功退出系统，即将离开！");
-        return map;
+        System.out.println("用户已退出登录！");
+        return "index";
     }
 
     @PostMapping("/doUserRegister")
