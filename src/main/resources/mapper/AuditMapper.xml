@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nxu.dao.AuditMapper">
+    <!-- 根据审核类型查找审核记录 -->
+    <select id="getAuditListByType" resultType="nxu.entity.Audit">
+        SELECT id, type, entity, state, info
+        FROM audit
+        WHERE type = #{type}
+    </select>
+
+    <!-- 根据审核状态查找审核记录 -->
+    <select id="getAuditListByState" resultType="nxu.entity.Audit">
+        SELECT id, type, entity, state, info
+        FROM audit
+        WHERE state = #{state}
+    </select>
+
+    <!-- 根据审核ID获取审核详情 -->
+    <select id="getAuditById" resultType="nxu.entity.Audit">
+        SELECT id, type, entity, state, info
+        FROM audit
+        WHERE id = #{id}
+    </select>
+
+    <!-- 更新审核状态 -->
+    <update id="updateAuditState">
+        UPDATE audit
+        SET state = #{state}, info = #{info}
+        WHERE id = #{id}
+    </update>
+</mapper>
