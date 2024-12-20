@@ -1,12 +1,117 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>表格模板</title>
+    <meta content="乐享校园-表格模板" name="description">
+    <meta content="乐享校园" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+
 </head>
+
 <body>
-餐品订单
-<h1 th:text="${msg}"></h1>
-<input th:value="${msg}">
+<div th:replace="systemHeader :: myHeader"></div>
+
+<div th:replace="systemSidebar :: mySidebar"></div>
+
+<main class="main" id="main">
+
+    <div class="pagetitle">
+        <h1>跑腿订单管理</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+                <li class="breadcrumb-item">跑腿订单管理</li>
+                <li class="breadcrumb-item active">数据表格</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🟣🟢🟡</h5>
+                        <!-- 数据表格 -->
+                        <table class="table datatable">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">用户</th>
+                                <th scope="col">跑腿人员</th>
+                                <th scope="col">商品信息</th>
+                                <th scope="col">开始时间</th>
+                                <th scope="col">结束时间</th>
+                                <th scope="col">配送状态</th>
+                                <th scope="col">订单备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="mealsorder : ${mealsorder}" th:id="'mealsorder' + ${mealsorder.id}">
+                                <th scope="row" th:text="${mealsorder.id}"></th>
+                                <td th:text="${mealsorder.user}"></td>
+                                <td th:text="${mealsorder.errands}"></td>
+                                <td th:text="${mealsorder.checklist}"></td>
+<!--                                <td th:text="${#dates.format(mealsorder.startTime, 'yyyy-MM-dd HH:mm:ss')}"></td>-->
+<!--                                <td th:text="${#dates.format(mealsorder.endTime, 'yyyy-MM-dd HH:mm:ss')}"></td>-->
+                                <td th:text="${mealsorder.state}"></td>
+                                <td th:text="${mealsorder.remarks}"></td>
+                            </tr>
+                            </tbody>
+                        </table><!-- End 数据表格 -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<div th:replace="systemFooter :: myFooter"></div>
+
+<div th:replace="systemFooter :: myGoToUp"></div>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
 </body>
+
 </html>
+
+<script src="assets/js/jquery.js"></script>
