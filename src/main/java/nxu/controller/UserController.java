@@ -2,8 +2,12 @@ package nxu.controller;
 
 import jakarta.servlet.http.HttpSession;
 import nxu.entity.Identity;
+import nxu.entity.Kinds;
+import nxu.entity.Taste;
 import nxu.entity.User;
 import nxu.service.IdentityService;
+import nxu.service.KindsService;
+import nxu.service.TasteService;
 import nxu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +31,12 @@ public class UserController {
     @Autowired
     private IdentityService identityService;
 
+    @Autowired
+    private KindsService kindsService;
+
+    @Autowired
+    private TasteService tasteService;
+
     @PostMapping("/doUserLogin")
     @ResponseBody
     public Map<String, Object> login(HttpSession session, String phone, String password) {
@@ -38,12 +48,19 @@ public class UserController {
             map.put("message", "系统提示：该手机号尚未注册！");
         } else {
             if (user.getPassword().equals(password)) {
-                System.out.println("登录的用户信息：" + user);
+                System.out.println("Tips:登录的用户信息：" + user);
                 map.put("status", 2);
                 map.put("message", "系统提示：登录成功，欢迎您！");
                 session.setAttribute("user", user);     // 把用户数据存入Session
+
                 List<Identity> identities = identityService.selectAll();
                 session.setAttribute("identityList", identities);   // 把身份类型也存入Session
+
+                List<Kinds> kinds = kindsService.selectAllKinds();
+                session.setAttribute("kindsList", kinds);   // 把餐品种类也存入Session
+
+                List<Taste> tastes = tasteService.selectAllTaste();
+                session.setAttribute("tasteList", tastes);  // 把餐品口味也存入Session
             } else {
                 map.put("status", 3);
                 map.put("message", "系统提示：输入的密码不正确！");
@@ -55,7 +72,7 @@ public class UserController {
     @GetMapping("/doUserLogout")
     public String logout(HttpSession session) {
         session.invalidate();
-        System.out.println("用户已退出登录！");
+        System.out.println("Tips:用户已退出登录！");
         return "index";
     }
 
@@ -74,7 +91,6 @@ public class UserController {
             user.setGender(1);
             user.setOther("该用户尚未填写其他信息！");
             user.setIdentity(new Identity(5, ""));
-            System.out.println("新注册信息：" + user);
             int i = userService.insertUser(user);
             if (i > 0) {
                 map.put("status", 2);
@@ -92,9 +108,6 @@ public class UserController {
 
         List<User> users = userService.selectUserByIdentity(0);
         model.addAttribute("users", users);
-
-        List<Identity> identities = identityService.selectAll();
-        model.addAttribute("identities", identities);
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("phone", "");
@@ -115,6 +128,7 @@ public class UserController {
         List<Identity> identities = identityService.selectAll();
         model.addAttribute("identities", identities);
 
+        // 将页面传过来的数据转换为int类型传回去
         int identity = Integer.parseInt(params.get("identity").toString());
         params.remove("identity");
         params.put("identity", identity);
@@ -170,10 +184,8 @@ public class UserController {
     @PostMapping("/doDeleteUser")
     @ResponseBody
     public Map<String, Object> doDeleteUser(int id) {
-        System.out.println("删除用户传过来的参数：" + id);
         Map<String, Object> map = new HashMap<>();
         int result = userService.deleteUser(id);
-        System.out.println("删除结果：" + result);
         if (result > 0) {
             map.put("status", true);
             map.put("message", "系统提示：删除成功，该用户已被删除！");

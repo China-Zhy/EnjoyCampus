@@ -34,4 +34,13 @@ public interface CommentsService {
      * @return 评论集合
      */
     PageInfo<Comments> selectComments(Map<String, Object> map);
+
+    /**
+     * 更改评论状态
+     *
+     * @param id    评论编号
+     * @param state 评论状态
+     * @return 更改结果
+     */
+    int updateComments(int id, int state);
 }

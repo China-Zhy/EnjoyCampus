@@ -41,7 +41,7 @@ public class MealsTest extends BaseTest {
     public void test3() {
         Address address = new Address();
         address.setId(3);
-        int i = mealsService.updateMeals(new Meals(4, "新测试餐品", 9.9, "新一堆原料", "1-2-3-4", "happy.png", 1, "新一份测试餐品", 1, address));
+        int i = mealsService.updateMeals(new Meals(1, "新测试餐品", 9.9, "新一堆原料", "1-2-3-4", "happy.png", 1, "新一份测试餐品", 1, address));
         System.out.println(i);
     }
 

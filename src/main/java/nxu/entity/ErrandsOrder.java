@@ -1,11 +1,20 @@
 package nxu.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
 /**
  * @author 张宏业
  * @apiNote 跑腿订单实体类
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class ErrandsOrder {
     private int id;                     // 订单编号
     private int user;                   // 用户编号

@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <title>乐享校园后台侧边导航</title>
-    <meta content="乐享校园后台侧边导航" name="description">
+    <meta content="乐享校园-后台侧边导航" name="description">
     <meta content="乐享校园" name="keywords">
 
     <!-- Favicons -->
@@ -77,12 +77,12 @@
             </a>
             <ul class="nav-content collapse " data-bs-parent="#sidebar-nav" id="forms-nav">
                 <li>
-                    <a href="#">
+                    <a href="/goToMealsSelect">
                         <i class="bi bi-circle"></i><span>查询餐品</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="/goToMealsInsert">
                         <i class="bi bi-circle"></i><span>新增餐品</span>
                     </a>
                 </li>
@@ -125,13 +125,18 @@
             </a>
             <ul class="nav-content collapse " data-bs-parent="#sidebar-nav" id="order-nav">
                 <li>
-                    <a href="/getOrderErrands">
+                    <a href="/goToOrderManager?type=1">
                         <i class="bi bi-circle"></i><span>跑腿订单</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/getOrderMeals">
+                    <a href="/goToOrderManager?type=2">
                         <i class="bi bi-circle"></i><span>订餐订单</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>待定功能</span>
                     </a>
                 </li>
             </ul>
@@ -144,13 +149,8 @@
             </a>
             <ul class="nav-content collapse " data-bs-parent="#sidebar-nav" id="message-nav">
                 <li>
-                    <a href="#">
+                    <a href="/toToCommentsManager">
                         <i class="bi bi-circle"></i><span>查询评论</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>新增评论</span>
                     </a>
                 </li>
                 <li>
@@ -169,18 +169,18 @@
             </a>
             <ul class="nav-content collapse " data-bs-parent="#sidebar-nav" id="tables-nav">
                 <li>
-                    <a href="/getAuditErrands?type=1">
+                    <a href="/goToAuditManager?type=1">
                         <i class="bi bi-circle"></i><span>配送人员审核</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/getAuditMealUser?type=2">
+                    <a href="/goToAuditManager?type=2">
                         <i class="bi bi-circle"></i><span>餐厅人员审核</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/getAuditMeals?type=3">
-                        <i class="bi bi-circle"></i><span>餐品审核</span>
+                    <a href="/goToAuditManager?type=3">
+                        <i class="bi bi-circle"></i><span>餐厅餐品审核</span>
                     </a>
                 </li>
             </ul>
@@ -189,14 +189,14 @@
         <li class="nav-heading">更多功能</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="/getTasteMeals">
+            <a class="nav-link collapsed" href="/goToMealsTaste">
                 <i class="bi bi-inboxes"></i>
                 <span>餐品口味管理</span>
             </a>
         </li><!-- End -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="/getMealsKinds">
+            <a class="nav-link collapsed" href="/goToMealsKinds">
                 <i class="bi bi-journal-plus"></i>
                 <span>餐品种类管理</span>
             </a>

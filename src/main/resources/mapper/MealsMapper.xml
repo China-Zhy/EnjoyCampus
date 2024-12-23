@@ -48,7 +48,7 @@
                 detail = #{detail},
             </if>
             <if test="type != '' and type != null">
-                type = #{type},
+                type = #{type}
             </if>
             where id = #{id}
         </set>

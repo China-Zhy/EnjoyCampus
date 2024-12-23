@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>餐品审核</title>
+    <meta content="乐享校园-餐品审核" name="description">
+    <meta content="乐享校园" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!--提示框(开始)-->
+<div class="alert alert-primary alert-dismissible fade show col-lg-3 myAlert" id="blueAlert" role="alert">
+    <i class="bi bi-star me-1"></i>
+    <span id="blueInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-success alert-dismissible fade show col-lg-3 myAlert" id="greenAlert" role="alert">
+    <i class="bi bi-check-circle me-1"></i>
+    <span id="greenInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-danger alert-dismissible fade show col-lg-3 myAlert" id="redAlert" role="alert">
+    <i class="bi bi-exclamation-octagon me-1"></i>
+    <span id="redInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+<!--提示框(结束)-->
+
+<div th:replace="systemHeader :: myHeader"></div>
+
+<div th:replace="systemSidebar :: mySidebar"></div>
+
+<main class="main" id="main">
+
+    <div class="pagetitle">
+        <h1 th:if="${type==1}">配送人员审核</h1>
+        <h1 th:if="${type==2}">餐厅人员审核</h1>
+        <h1 th:if="${type==3}">餐品餐品审核</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+                <li class="breadcrumb-item">审核管理</li>
+                <li class="breadcrumb-item active" th:if="${type==1}">配送人员审核数据表</li>
+                <li class="breadcrumb-item active" th:if="${type==2}">餐厅人员审核数据表</li>
+                <li class="breadcrumb-item active" th:if="${type==3}">餐厅餐品审核数据表</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🟣🟢🟡查询条件</h5>
+
+                        <!-- 条件查询的表单 -->
+                        <form action="/doSelectAudit" method="post">
+                            <div class="row mb-3">
+
+                                <div class="col-sm-2">
+                                    <input class="form-control" disabled th:if="${type==1}"
+                                           type="text" value="🔵实体类型：配送人员">
+                                    <input class="form-control" disabled th:if="${type==2}"
+                                           type="text" value="🔵实体类型：餐厅人员">
+                                    <input class="form-control" disabled th:if="${type==3}"
+                                           type="text" value="🔵实体类型：餐厅餐品">
+                                    <input hidden name="type" th:value="${type}" type="number">
+                                </div>
+
+                                <label class="col-sm-1 col-form-label" for="state">🔴审核状态</label>
+                                <div class="col-sm-2">
+                                    <select aria-label="Default select example" class="form-select" id="state"
+                                            name="state">
+                                        <option th:selected="${state == 0}" value="0">请选择</option>
+                                        <option th:selected="${state == 1}" value="1">尚未审核</option>
+                                        <option th:selected="${state == 2}" value="2">审核通过</option>
+                                        <option th:selected="${state == 3}" value="3">审核未通过</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary" type="submit">查询</button>
+                                    <button class="btn btn-secondary" type="reset">重置</button>
+                                </div>
+
+                            </div>
+                        </form><!-- End 条件查询的表单 -->
+
+                        <!-- 数据表格 -->
+                        <table class="table datatable">
+                            <thead>
+                            <tr>
+                                <th scope="col">id</th>
+                                <th scope="col">Entity</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Info</th>
+                                <th scope="col">相关操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- 遍历审核记录 -->
+                            <tr th:each="audit : ${auditList}">
+                                <th scope="row" th:text="${audit.id}"></th>
+                                <td th:text="${audit.entity}"></td>
+                                <td th:text="${audit.state}"></td>
+                                <td th:text="${#strings.abbreviate(audit.info,25)}"></td>
+                                <td>
+                                    <button class="btn btn-success btn-sm" data-bs-target="#modalDialogScrollable"
+                                            data-bs-toggle="modal" th:onclick="showDetail([[${audit.entity}]],[[${audit.type}]])"
+                                            type="button">详情
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" data-bs-target="#verticalycentered"
+                                            data-bs-toggle="modal" th:onclick="showUpdate([[${audit.id}]],[[${audit.state}]],[[${audit.type}]])"
+                                            type="button">
+                                        审核
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table><!-- End 数据表格 -->
+
+                        <!-- 详情弹窗 -->
+                        <div class="modal fade" id="modalDialogScrollable" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" th:if="${type == 1}">配送人员的详细信息</h5>
+                                        <h5 class="modal-title" th:if="${type == 2}">餐厅人员的详情信息</h5>
+                                        <h5 class="modal-title" th:if="${type == 3}">餐厅餐品的详情信息</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+
+                                    <!-- 配送人员和餐厅人员的详情信息弹窗 -->
+                                    <div class="modal-body" th:if="${type != 3}">
+                                        <div class="card">
+                                            <img alt="..." class="card-img-top" id="detailUserAvatar"
+                                                 src="assets/img/card.jpg">
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户编号:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailUserId" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户昵称:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailUserName" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">手机号码:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailUserPhone" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">用户密码:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailUserPassword"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">注册日期:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailUserRegister"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">身份类型:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailUserIdentity"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">其他信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" disabled
+                                                          id="detailUserOther" style="height: 60px"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 餐厅餐品的详情信息弹窗 -->
+                                    <div class="modal-body" th:if="${type == 3}">
+                                        <div class="card">
+                                            <img alt="..." class="card-img-top" id="detailImage"
+                                                 src="assets/img/card.jpg">
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品编号:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailId" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品名称:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailName" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品价格:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailPrice" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品原料:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailMaterials" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">风味类型:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailFlavors" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品份量:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailHeft" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品种类:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailType" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">详情信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" disabled
+                                                          id="detailDetail" style="height: 60px"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">地址信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" disabled
+                                                          id="detailAddress" style="height: 60px"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div><!-- End 详情弹窗 -->
+
+                        <!-- 审核弹窗 -->
+                        <div class="modal fade" id="verticalycentered" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">⛔这是审核管理，请谨慎审核！</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input hidden="hidden" id="updateId" type="number"><!--隐藏的ID-->
+                                        <input hidden="hidden" id="updateType" type="number"><!--隐藏的Type-->
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">审核的状态：</label>
+                                            <div class="col-sm-9">
+                                                <select aria-label="Default select example" class="form-select"
+                                                        id="updateState">
+                                                    <option value="1">尚未审核</option>
+                                                    <option value="2">审核通过</option>
+                                                    <option value="3">审核未通过</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label"
+                                                   for="updateInfo">审核的反馈：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" id="updateInfo"
+                                                          style="height: 150px"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doUpdate()"
+                                                type="button">确认
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 审核弹窗 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<div th:replace="systemFooter :: myFooter"></div>
+
+<div th:replace="systemFooter :: myGoToUp"></div>
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>
+<script src="assets/js/jquery.js"></script>
+<script>
+    function showDetail(entity, type) {
+        if (type === 3) {
+            $.ajax({
+                type: 'POST',
+                url: '/getOneMeals',
+                data: {
+                    "id": entity
+                },
+                success: function (data) {
+
+                    $('#detailImage').attr('src', 'image/meals/' + data.meals.image);
+                    $('#detailId').val(data.meals.id);
+                    $('#detailName').val(data.meals.name);
+                    $('#detailPrice').val(data.meals.price);
+                    $('#detailMaterials').val(data.meals.materials);
+                    $('#detailFlavors').val(data.flavors);
+                    $('#detailHeft').val(data.meals.heft);
+                    $('#detailType').val(data.meals.type);
+                    $('#detailDetail').val(data.meals.detail);
+                    $('#detailAddress').val(data.meals.address.school.name + ' ' + data.meals.address.campus.name + ' ' + data.meals.address.building.name + ' ' + data.meals.address.detail);
+
+                },
+                error: function () {
+                    $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 3000);
+                }
+            });
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/getDetailUser',
+                data: {
+                    "id": entity
+                },
+                success: function (data) {
+
+                    $('#detailUserAvatar').attr('src', data.avatar);
+                    $('#detailUserId').val(data.id);
+                    $('#detailUserName').val(data.name);
+                    $('#detailUserPhone').val(data.phone);
+                    $('#detailUserPassword').val(data.password);
+                    $('#detailUserRegister').val(data.register);
+                    $('#detailUserIdentity').val(data.identity.id);
+                    $('#detailUserOther').val(data.other);
+
+                },
+                error: function () {
+                    $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 3000);
+                }
+            });
+        }
+    }
+
+    function showUpdate(id, state, type) {
+        $('#updateId').val(id);
+        $('#updateState').val(state);
+        $('#updateType').val(type);
+    }
+
+    function doUpdate() {
+
+        let redAlert = $('#redAlert');      // 警告的弹出层(使用比较多，单独定义了一个变量)
+
+        $.ajax({
+            type: 'POST',
+            url: '/doUpdateAudit',
+            data: {
+                "id": $('#updateId').val(),
+                "state": $('#updateState').val(),
+                "info": $('#updateInfo').val()
+            },
+            success: function (data) {
+                if (data.status) {
+                    // 这里更新一下表格中的对应的数据
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                        window.location.href = "/goToAuditManager?type=" + $('#updateType').val();   // 目前相当于刷新页面
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+</script>

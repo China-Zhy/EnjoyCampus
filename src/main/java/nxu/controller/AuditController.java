@@ -7,14 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 /**
- * @author 常嘉祺
+ * @author 常嘉祺、张宏业
  * @apiNote 审核控制器
  */
 @Controller
@@ -23,31 +23,44 @@ public class AuditController {
     @Autowired
     private AuditService auditService;
 
-    /**
-     * 显示所有审核记录
-     * @param model 用于传递数据到视图层
-     * @return 返回视图名称
-     */
-    @GetMapping("/getAuditErrands")
-    public String getAuditErrands(@RequestParam("type") int type, Model model) {
-        // 根据传入的 type 处理不同的审核记录
-        List<Audit> audits = auditService.getAuditListByType(type);  // 调用 service 根据类型过滤数据
-        model.addAttribute("audits", audits);  // 将审核记录传递到视图层
-        return "auditErrands";  // 返回审核列表页面
-    }
-    @GetMapping("/getAuditMeals")
-    public String getAuditMeals(@RequestParam("type") int type, Model model) {
-        // 根据传入的 type 处理不同的审核记录
-        List<Audit> audits = auditService.getAuditListByType(type);  // 调用 service 根据类型过滤数据
-        model.addAttribute("audits", audits);  // 将审核记录传递到视图层
-        return "auditMeals";  // 返回审核列表页面
-    }
-    @GetMapping("/getAuditMealUser")
-    public String getAuditMealUser(@RequestParam("type") int type, Model model) {
-        // 根据传入的 type 处理不同的审核记录
-        List<Audit> audits = auditService.getAuditListByType(type);  // 调用 service 根据类型过滤数据
-        model.addAttribute("audits", audits);  // 将审核记录传递到视图层
-        return "auditMealUser";  // 返回审核列表页面
+    @GetMapping("/goToAuditManager")
+    public String getAuditErrands(int type, Model model) {
+
+        List<Audit> audits = auditService.getAuditListByType(type);
+
+        model.addAttribute("auditList", audits);
+        model.addAttribute("type", type);
+        model.addAttribute("state", 0);
+
+        return "auditManager";
     }
 
+    @PostMapping("/doSelectAudit")
+    public String doSelectAudit(int type, int state, Model model) {
+
+        List<Audit> list = auditService.getAuditListByState(type, state);
+
+        model.addAttribute("auditList", list);
+        model.addAttribute("type", type);
+        model.addAttribute("state", state);
+
+        return "auditManager";
+    }
+
+    @PostMapping("/doUpdateAudit")
+    @ResponseBody
+    public Map<String, Object> doUpdateAudit(int id, int state, String info) {
+
+        int i = auditService.updateAuditState(id, state, info);
+
+        Map<String, Object> map = new HashMap<>();
+        if (i > 0) {
+            map.put("status", true);
+            map.put("message", "系统提示：修改成功，该审核数据已更新！");
+        } else {
+            map.put("status", false);
+            map.put("message", "系统提示：修改失败，该审核数据尚未修改！");
+        }
+        return map;
+    }
 }

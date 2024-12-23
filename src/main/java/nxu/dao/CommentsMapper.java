@@ -35,4 +35,13 @@ public interface CommentsMapper {
      * @return 评论集合
      */
     List<Comments> selectComments(Map<String, Object> map);
+
+    /**
+     * 更改评论状态
+     *
+     * @param id    评论编号
+     * @param state 评论状态
+     * @return 更改结果
+     */
+    int updateComments(@Param("id") int id, @Param("state") int state);
 }

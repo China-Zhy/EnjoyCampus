@@ -24,7 +24,7 @@
     </update>
 
     <select id="selectAllKinds" resultType="Kinds">
-        select * from `kinds`
+        select * from `kinds` order by id
     </select>
 
 </mapper>

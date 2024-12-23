@@ -23,4 +23,5 @@ public class Comments {
     private String info;            // 评价内容
     private String image;           // 评价图片
     private Date date;              // 评价时间
+    private int state;              // 评论状态
 }

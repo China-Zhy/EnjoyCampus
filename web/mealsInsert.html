@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>新增餐品</title>
+    <meta content="乐享校园-新增餐品" name="description">
+    <meta content="乐享校园" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+<!--提示框(开始)-->
+<div class="alert alert-primary alert-dismissible fade show col-lg-3 myAlert" id="blueAlert" role="alert">
+    <i class="bi bi-star me-1"></i>
+    <span id="blueInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-success alert-dismissible fade show col-lg-3 myAlert" id="greenAlert" role="alert">
+    <i class="bi bi-check-circle me-1"></i>
+    <span id="greenInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-danger alert-dismissible fade show col-lg-3 myAlert" id="redAlert" role="alert">
+    <i class="bi bi-exclamation-octagon me-1"></i>
+    <span id="redInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+<!--提示框(结束)-->
+
+<div th:replace="systemHeader :: myHeader"></div>
+
+<div th:replace="systemSidebar :: mySidebar"></div>
+
+<main class="main" id="main">
+
+    <div class="pagetitle">
+        <h1>添加餐品</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+                <li class="breadcrumb-item">餐品管理</li>
+                <li class="breadcrumb-item active">添加餐品</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">填写新增餐品的详情信息</h5>
+                        <form id="mealsInfo">
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="name">餐品名称：</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="name" name="name" type="text">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="price">餐品价格：</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="price" name="price" type="text">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="materials">餐品原料：</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" id="materials" style="height: 100px"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <legend class="col-form-label col-sm-2 pt-0">风味类型：</legend>
+                                <div class="col-sm-2" th:each="taste : ${session.tasteList}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" th:id="'taste'+${taste.id}"
+                                               th:value="${taste.id}" type="checkbox">
+                                        <label class="form-check-label" th:for="'taste'+${taste.id}"
+                                               th:text="${taste.name}"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="heft">餐品份量：</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="heft" type="number">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="detail">详情信息：</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" id="detail" style="height: 100px"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="type">餐品类型：</label>
+                                <div class="col-sm-10">
+                                    <select aria-label="Default select example" class="form-select" id="type">
+                                        <option value="0">未指定餐品类型</option>
+                                        <option th:each="kinds : ${session.kindsList}" th:text="${kinds.name}"
+                                                th:value="${kinds.id}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="imageInfo">餐品图片：</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="imageInfo" name="image" type="file">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="type"></label>
+                                <div class="col-sm-10">
+                                    <div class="d-grid gap-2 mt-3">
+                                        <button class="btn btn-primary" type="submit">提交</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">上传新增餐品的展示图片</h5>
+                        <form enctype="multipart/form-data" id="imageUpload">
+
+                            <div class="row mb-3">
+                                <div class="col-sm-12" style="height: 600px;">
+                                    <!-- 用于显示上传后的图片 -->
+                                    <img alt="" height="600px" id="displayImage" width="600px"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<div th:replace="systemFooter :: myFooter"></div>
+
+<div th:replace="systemFooter :: myGoToUp"></div>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
+<script src="assets/js/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+
+        // 虚假的图片上传(待修改)
+        $('#imageInfo').on('change', function () {
+            let file = this.files[0];
+            $('#displayImage').attr('src', 'image/avatar/' + file.name).show();
+        });
+
+        $('#mealsInfo').submit(function (e) {
+            e.preventDefault();
+
+            // 用于存储选中的复选框的值的数组
+            let selectedValues = [];
+            // 选择所有的复选框元素
+            $("input[type='checkbox']:checked").each(function () {
+                selectedValues.push($(this).val());     // 将每个选中的复选框的值添加到数组中
+            });
+            let resultString = selectedValues.join('-');    // 使用join方法将数组元素用 - 拼接成字符串
+
+            $.ajax({
+                url: "/doInsertMeals",
+                type: "POST",
+                data: {
+                    "name": $('#name').val(),
+                    "price": $('#price').val(),
+                    "materials": $('#materials').val(),
+                    "flavors": resultString,
+                    "image": $("#imageInfo").val(),
+                    "heft": $('#heft').val(),
+                    "detail": $('#detail').val(),
+                    "type": $('#type').val()
+                },
+                success: function (data) {
+                    if (data.status) {
+                        $('#greenInfo').text(data.message);
+                        $('#greenAlert').show();
+                        setTimeout(function () {
+                            $('#greenAlert').hide();
+                            window.location.href = "/goToMealsInsert";   // 目前相当于刷新页面
+                        }, 3000);
+                    } else {
+                        $('#redInfo').text(data.message);
+                        $('#redAlert').show();
+                        setTimeout(function () {
+                            $('#redAlert').hide();
+                        }, 2000);
+                    }
+                },
+                error: function () {
+                    $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 3000);
+                }
+            });
+        });
+    });
+</script>

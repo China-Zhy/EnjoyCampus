@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!--项目组成员：张宏业、张月、张长志、常嘉祺-->
     <dependencies>
 
         <!--Spring + SpringMVC-->

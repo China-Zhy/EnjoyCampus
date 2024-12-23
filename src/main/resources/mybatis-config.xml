@@ -48,6 +48,10 @@
         <mapper resource="mapper/KindsMapper.xml"/>
         <mapper resource="mapper/CommentsMapper.xml"/>
         <mapper resource="mapper/IdentityMapper.xml"/>
+        <mapper resource="mapper/TasteMapper.xml"/>
+        <mapper resource="mapper/AuditMapper.xml"/>
+        <mapper resource="mapper/OrderMapper.xml"/>
+        <mapper resource="mapper/MessageMapper.xml"/>
     </mappers>
 
 </configuration>

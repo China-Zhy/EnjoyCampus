@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nxu.dao.TasteMapper">
+
+    <insert id="insertTaste">
+        insert into `taste` values(null,#{name})
+    </insert>
+
+    <update id="updateTaste">
+        update `taste` set name = #{name} where id = #{id}
+    </update>
+
+    <delete id="deleteTaste">
+        delete from `taste` where id=#{id}
+    </delete>
+
+    <select id="selectAllTaste" resultType="nxu.entity.Taste">
+        select * from `taste` order by id
+    </select>
+
+</mapper>

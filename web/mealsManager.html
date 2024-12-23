@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>餐品管理</title>
+    <meta content="乐享校园-餐品管理" name="description">
+    <meta content="乐享校园" name="keywords">
+
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!--提示框(开始)-->
+<div class="alert alert-primary alert-dismissible fade show col-lg-3 myAlert" id="blueAlert" role="alert">
+    <i class="bi bi-star me-1"></i>
+    <span id="blueInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-success alert-dismissible fade show col-lg-3 myAlert" id="greenAlert" role="alert">
+    <i class="bi bi-check-circle me-1"></i>
+    <span id="greenInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-danger alert-dismissible fade show col-lg-3 myAlert" id="redAlert" role="alert">
+    <i class="bi bi-exclamation-octagon me-1"></i>
+    <span id="redInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+<!--提示框(结束)-->
+
+<div th:replace="systemHeader :: myHeader"></div>
+
+<div th:replace="systemSidebar :: mySidebar"></div>
+
+<main class="main" id="main">
+
+    <div class="pagetitle">
+        <h1>餐品管理</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+                <li class="breadcrumb-item">餐品管理</li>
+                <li class="breadcrumb-item active">餐品数据表</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <!-- 条件查询的表单 -->
+                        <form action="/doSelectMeals" method="post">
+                            <div class="row mb-3">
+
+                                <label class="col-sm-1 col-form-label" for="inputText">餐品名称:</label>
+                                <div class="col-sm-2">
+                                    <input class="form-control" id="inputText" name="name" th:value="${params.name}"
+                                           type="text">
+                                </div>
+
+                                <label class="col-sm-1 col-form-label" for="inputSelect">餐品类型:</label>
+                                <div class="col-sm-2">
+                                    <select aria-label="Default select example" class="form-select" id="inputSelect"
+                                            name="type">
+                                        <option value="0">未指定餐品类型</option>
+                                        <option th:each="kinds : ${session.kindsList}"
+                                                th:selected="${params.type == kinds.id}"
+                                                th:text="${kinds.name}"
+                                                th:value="${kinds.id}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary" type="submit">查询</button>
+                                    <button class="btn btn-secondary" type="reset">重置</button>
+                                </div>
+
+                            </div>
+                        </form><!-- End 条件查询的表单 -->
+
+                        <!-- 数据表格 -->
+                        <table class="table datatable" id="mealsTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">名称</th>
+                                <th scope="col">图片</th>
+                                <th scope="col">价格</th>
+                                <th scope="col">原料</th>
+                                <th scope="col">风味</th>
+                                <th scope="col">份量</th>
+                                <th scope="col">详情</th>
+                                <th scope="col">种类</th>
+                                <th scope="col">相关操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="meals : ${mealsList}" th:id="'meals' + ${meals.id}">
+                                <th scope="row" th:text="${meals.id}"></th>
+                                <td th:text="${meals.name}"></td>
+                                <td>
+                                    <img alt="" th:height="30" th:src="'image/meals/'+${meals.image}" th:width="30"/>
+                                </td>
+                                <td th:text="${meals.price}"></td>
+                                <td th:text="${#strings.abbreviate(meals.materials,13)}"></td>
+                                <td th:text="${meals.flavors}"></td>
+                                <td th:text="${meals.heft}"></td>
+                                <td th:text="${#strings.abbreviate(meals.detail,13)}"></td>
+                                <td th:text="${meals.type}"></td>
+                                <td>
+                                    <button class="btn btn-success btn-sm" data-bs-target="#scrollingModal"
+                                            data-bs-toggle="modal"
+                                            th:onclick="showDetail([[${meals.id}]])" type="button">详情
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" data-bs-target="#modalDialogScrollable"
+                                            data-bs-toggle="modal"
+                                            th:onclick="showUpdate([[${meals.id}]])"
+                                            type="button">修改
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" data-bs-target="#verticalycentered"
+                                            data-bs-toggle="modal"
+                                            th:onclick="showDelete([[${meals.id}]])" type="button">
+                                        删除
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table><!-- End 数据表格 -->
+
+                        <!-- 详情弹窗 -->
+                        <div class="modal fade" id="scrollingModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">餐品的详细信息</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="" class="card-img-top" id="detailImage" src="assets/img/card.jpg">
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品编号:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailId" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品名称:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailName" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品价格:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailPrice" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品原料:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailMaterials" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">风味类型:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailFlavors" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品份量:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailHeft" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品种类:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="detailType" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">详情信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" disabled
+                                                          id="detailDetail" style="height: 60px"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">地址信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" disabled
+                                                          id="detailAddress" style="height: 60px"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 详情弹窗-->
+
+                        <!-- 修改弹窗 -->
+                        <div class="modal fade" id="modalDialogScrollable" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">修改餐品的信息</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="" class="card-img-top" id="changeImage" src="assets/img/card.jpg">
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="updateImage">餐品图片：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updateImage" name="image" type="file">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="updateId">餐品编号:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" disabled id="updateId" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="updateName">餐品名称:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updateName" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="updatePrice">餐品价格:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updatePrice" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label"
+                                                   for="updateMaterials">餐品原料:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updateMaterials" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <legend class="col-form-label col-sm-3 pt-0">风味类型：</legend>
+                                            <div class="col-sm-3" th:each="taste : ${session.tasteList}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" th:id="'taste'+${taste.id}"
+                                                           th:value="${taste.id}" type="checkbox">
+                                                    <label class="form-check-label" th:for="'taste'+${taste.id}"
+                                                           th:text="${taste.name}"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="updateHeft">餐品份量:</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="updateHeft" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">餐品种类：</label>
+                                            <div class="col-sm-9">
+                                                <select aria-label="Default select example" class="form-select"
+                                                        id="updateType">
+                                                    <option th:each="kinds : ${session.kindsList}"
+                                                            th:text="${kinds.name}"
+                                                            th:value="${kinds.id}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="updateDetail">详情信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" id="updateDetail"
+                                                          style="height: 70px"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="updateAddress">地址信息：</label>
+                                            <div class="col-sm-9">
+                                                <textarea class="form-control" disabled id="updateAddress"
+                                                          style="height: 60px"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doUpdate()"
+                                                type="button">保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 修改弹窗 -->
+
+                        <!-- 删除弹窗 -->
+                        <div class="modal fade" id="verticalycentered" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">⛔删除操作不可撤销，请谨慎操作！</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="..." class="card-img-top" src="assets/img/card.jpg">
+                                        </div>
+                                        <input hidden="hidden" id="deleteId" type="number">
+                                        您是否真的打算删除这条数据？？？
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doDelete()"
+                                                type="button">确认
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 删除弹窗 -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<div th:replace="systemFooter :: myFooter"></div>
+
+<div th:replace="systemFooter :: myGoToUp"></div>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
+<script src="assets/js/jquery.js"></script>
+<script>
+    // 修改功能里的虚假的图片上传(待修改)
+    $('#updateImage').on('change', function () {
+        let file = this.files[0];
+        $('#changeImage').attr('src', 'image/avatar/' + file.name).show();
+    })
+
+    function showDetail(id) {
+        $.ajax({
+            type: 'POST',
+            url: '/getOneMeals',
+            data: {
+                "id": id
+            },
+            success: function (data) {
+
+                $('#detailImage').attr('src', 'image/meals/' + data.meals.image);
+                $('#detailId').val(data.meals.id);
+                $('#detailName').val(data.meals.name);
+                $('#detailPrice').val(data.meals.price);
+                $('#detailMaterials').val(data.meals.materials);
+                $('#detailFlavors').val(data.flavors);
+                $('#detailHeft').val(data.meals.heft);
+                $('#detailType').val(data.meals.type);
+                $('#detailDetail').val(data.meals.detail);
+                $('#detailAddress').val(data.meals.address.school.name + ' ' + data.meals.address.campus.name + ' ' + data.meals.address.building.name + ' ' + data.meals.address.detail);
+
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function showUpdate(id) {
+        $("input[type='checkbox']").prop("checked", false); // 清空餐品口味复选框
+
+        $.ajax({
+            type: 'POST',
+            url: '/getOneMeals',
+            data: {
+                "id": id
+            },
+            success: function (data) {
+
+                $('#changeImage').attr('src', 'image/meals/' + data.meals.image);
+                $('#updateId').val(data.meals.id);
+                $('#updateName').val(data.meals.name);
+                $('#updatePrice').val(data.meals.price);
+                $('#updateMaterials').val(data.meals.materials);
+                $('#updateHeft').val(data.meals.heft);
+                $('#updateType').val(data.meals.type);
+                $('#updateDetail').val(data.meals.detail);
+                $('#updateAddress').val(data.meals.address.school.name + ' ' + data.meals.address.campus.name + ' ' + data.meals.address.building.name + ' ' + data.meals.address.detail);
+
+
+                // 遍历每个复选框
+                $("input[type='checkbox']").each(function () {
+                    // 获取当前复选框的值
+                    let checkboxValue = $(this).val();
+                    // 检查当前复选框的值是否在数组中
+                    if ($.inArray(checkboxValue, data.flavors) !== -1) {
+                        // 如果在数组中，将复选框设置为选中状态
+                        $(this).prop("checked", true);
+                    }
+                });
+
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function doUpdate() {
+
+        let redAlert = $('#redAlert');      // 警告的弹出层(使用比较多，单独定义了一个变量)
+
+        // 用于存储选中的复选框的值的数组
+        let selectedValues = [];
+        // 选择所有的复选框元素
+        $("input[type='checkbox']:checked").each(function () {
+            selectedValues.push($(this).val());     // 将每个选中的复选框的值添加到数组中
+        });
+        let resultString = selectedValues.join('-');    // 使用join方法将数组元素用 - 拼接成字符串
+
+        $.ajax({
+            type: 'POST',
+            url: '/doUpdateMeals',
+            data: {
+                "id": $('#updateId').val(),
+                "name": $('#updateName').val(),
+                "price": $('#updatePrice').val(),
+                "materials": $('#updateMaterials').val(),
+                "flavors": resultString,
+                "image": $('#updateImage').val(),
+                "heft": $('#updateHeft').val(),
+                "detail": $('#updateDetail').val(),
+                "type": $('#updateType').val()
+            },
+            success: function (data) {
+                if (data.status) {
+                    // 这里更新一下表格中的对应的数据
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                        window.location.href = "/goToMealsSelect";   // 目前相当于刷新页面
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function showDelete(id) {
+        $('#deleteId').val(id);
+    }
+
+    function doDelete() {
+
+        $.ajax({
+            type: 'POST',
+            url: '/doDeleteMeals',
+            data: {
+                "id": $('#deleteId').val()
+            },
+            success: function (data) {
+                if (data.status) {
+                    $('#meals' + $('#deleteId').val()).remove();     // 移除被删除的数据行
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+</script>

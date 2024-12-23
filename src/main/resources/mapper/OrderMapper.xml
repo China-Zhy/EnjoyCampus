@@ -1,21 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="nxu.dao.OrderMapper">
 
     <select id="selectErrandsOrders" resultType="nxu.entity.ErrandsOrder">
-            select * from `errandsorder`
-            <where>
-                <if test="user != '' and user != null">
-                    user = #{user}
-                </if>
-                <if test="errands != '' and errands != null">
-                    and errands = #{errands}
-                </if>
-            </where>
-            order by id desc
+        select * from `errandsorder`
+        <where>
+            <if test="user != '' and user != null">
+                user = #{user}
+            </if>
+            <if test="errands != '' and errands != null">
+                and errands = #{errands}
+            </if>
+        </where>
+        order by id desc
     </select>
+
+    <insert id="insertErrandsOrder">
+        insert into `errandsorder`
+        values(null,#{user},#{errands},#{voucher},#{checkList},NOW(),NOW(),#{state},#{remarks})
+    </insert>
+
+    <update id="updateErrandsOrder">
+        update `errandsorder`
+        <set>
+            <if test="voucher != '' and voucher != null">
+                voucher = #{voucher},
+            </if>
+            <if test="checkList != '' and checkList != null">
+                checkList = #{checkList},
+            </if>
+            <if test="endTime != null">
+                endTime = NOW(),
+            </if>
+            <if test="state != '' and state != null">
+                state = #{state},
+            </if>
+            <if test="remarks != '' and remarks != null">
+                remarks = #{remarks}
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    <delete id="deleteErrandsOrder">
+        delete from `errandsorder` where id = #{id}
+    </delete>
 
     <select id="selectMealsOrders" resultType="nxu.entity.MealsOrder">
         select * from `mealsorder`
@@ -28,4 +57,33 @@
             </if>
         </where>
     </select>
+
+    <insert id="insertMealsOrder">
+        insert into `mealsorder`
+        values(null,#{user},#{errands},#{checkList},NOW(),NOW(),#{state},#{remarks})
+    </insert>
+
+    <update id="updateMealsOrder">
+        update `mealsorder`
+        <set>
+            <if test="checkList != '' and checkList != null">
+                checkList = #{checkList},
+            </if>
+            <if test="endTime != null">
+                endTime = NOW(),
+            </if>
+            <if test="state != '' and state != null">
+                state = #{state},
+            </if>
+            <if test="remarks != '' and remarks != null">
+                remarks = #{remarks}
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+
+    <delete id="deleteMealsOrder">
+        delete from `mealsorder` where id = #{id}
+    </delete>
+
 </mapper>

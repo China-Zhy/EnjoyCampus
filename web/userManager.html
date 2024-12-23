@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>表格模板</title>
-    <meta content="乐享校园-表格模板" name="description">
+    <title>用户管理</title>
+    <meta content="乐享校园-用户管理" name="description">
     <meta content="乐享校园" name="keywords">
 
     <!-- Favicons -->
@@ -93,7 +93,8 @@
                                     <select aria-label="Default select example" class="form-select" id="inputSelect"
                                             name="identity">
                                         <option value="0">未指定人员类型</option>
-                                        <option th:each="identity : ${identities}" th:selected="${params.identity == identity.id}"
+                                        <option th:each="identity : ${session.identityList}"
+                                                th:selected="${params.identity == identity.id}"
                                                 th:text="${identity.name}"
                                                 th:value="${identity.id}"></option>
                                     </select>
@@ -101,7 +102,8 @@
 
                                 <label class="col-sm-1 col-form-label" for="inputDate">🟡注册日期</label>
                                 <div class="col-sm-2">
-                                    <input class="form-control" id="inputDate" name="register" th:value="${params.register}"
+                                    <input class="form-control" id="inputDate" name="register"
+                                           th:value="${params.register}"
                                            type="date">
                                 </div>
 
@@ -136,22 +138,24 @@
                                 <td th:text="${user.phone}"></td>
                                 <td th:text="${user.password}"></td>
                                 <td>
-                                    <img alt="头像" th:height="30" th:src="${user.avatar}" th:width="30"
-                                         title="用户头像"/>
+                                    <img th:height="30" th:src="${user.avatar}" th:width="30"/>
                                 </td>
                                 <td th:text="${user.gender} == 1 ? '男':'女' "></td>
                                 <td th:text="${#dates.format(user.register, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${user.other}"></td>
                                 <td th:text="${user.identity.name}"></td>
                                 <td>
-                                    <button class="btn btn-success btn-sm" data-bs-target="#scrollingModal" data-bs-toggle="modal"
+                                    <button class="btn btn-success btn-sm" data-bs-target="#scrollingModal"
+                                            data-bs-toggle="modal"
                                             th:onclick="showDetail([[${user.id}]])" type="button">详情
                                     </button>
-                                    <button class="btn btn-primary btn-sm" data-bs-target="#modalDialogScrollable" data-bs-toggle="modal"
+                                    <button class="btn btn-primary btn-sm" data-bs-target="#modalDialogScrollable"
+                                            data-bs-toggle="modal"
                                             th:onclick="showUpdate([[${user.id}]])"
                                             type="button">修改
                                     </button>
-                                    <button class="btn btn-danger btn-sm" data-bs-target="#verticalycentered" data-bs-toggle="modal"
+                                    <button class="btn btn-danger btn-sm" data-bs-target="#verticalycentered"
+                                            data-bs-toggle="modal"
                                             th:onclick="showDelete([[${user.id}]])" type="button">
                                         删除
                                     </button>
@@ -169,6 +173,7 @@
                                         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
                                                 type="button"></button>
                                     </div>
+
                                     <div class="modal-body">
                                         <div class="card">
                                             <img alt="..." class="card-img-top" id="detailAvatar"
@@ -215,7 +220,7 @@
                                             <label class="col-sm-3 col-form-label">其他信息：</label>
                                             <div class="col-sm-9">
                                                 <textarea class="form-control" disabled
-                                                          id="detailOther" style="height: 100px"></textarea>
+                                                          id="detailOther" style="height: 60px"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -228,7 +233,7 @@
                             <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">修改Xxx的信息</h5>
+                                        <h5 class="modal-title">修改用户的信息</h5>
                                         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
                                                 type="button"></button>
                                     </div>
@@ -284,7 +289,7 @@
                                             <label class="col-sm-3 col-form-label">其他信息：</label>
                                             <div class="col-sm-9">
                                                 <textarea class="form-control" id="updateOther"
-                                                          style="height: 100px"></textarea>
+                                                          style="height: 60px"></textarea>
                                             </div>
                                         </div>
 
@@ -389,7 +394,7 @@
 
             },
             error: function () {
-                $('#redInfo').val('系统提示：Ajax请求出错了哦！');
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
                 $('#redAlert').show();
                 setTimeout(function () {
                     $('#redAlert').hide();
@@ -423,7 +428,7 @@
 
             },
             error: function () {
-                $('#redInfo').val('系统提示：Ajax请求出错了哦！');
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
                 $('#redAlert').show();
                 setTimeout(function () {
                     $('#redAlert').hide();
@@ -481,6 +486,7 @@
                     $('#greenAlert').show();
                     setTimeout(function () {
                         $('#greenAlert').hide();
+                        window.location.href = "/goToUserSelect";   // 目前相当于刷新页面
                     }, 2000);
                 } else {
                     $('#redInfo').text(data.message);
@@ -530,7 +536,7 @@
                 }
             },
             error: function () {
-                $('#redInfo').val('系统提示：Ajax请求出错了哦！');
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
                 $('#redAlert').show();
                 setTimeout(function () {
                     $('#redAlert').hide();

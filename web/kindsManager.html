@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>餐品种类管理</title>
+    <meta content="乐享校园-餐品种类管理" name="description">
+    <meta content="乐享校园" name="keywords">
+
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!--提示框(开始)-->
+<div class="alert alert-primary alert-dismissible fade show col-lg-3 myAlert" id="blueAlert" role="alert">
+    <i class="bi bi-star me-1"></i>
+    <span id="blueInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-success alert-dismissible fade show col-lg-3 myAlert" id="greenAlert" role="alert">
+    <i class="bi bi-check-circle me-1"></i>
+    <span id="greenInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+
+<div class="alert alert-danger alert-dismissible fade show col-lg-3 myAlert" id="redAlert" role="alert">
+    <i class="bi bi-exclamation-octagon me-1"></i>
+    <span id="redInfo"></span>
+    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+<!--提示框(结束)-->
+
+<div th:replace="systemHeader :: myHeader"></div>
+
+<div th:replace="systemSidebar :: mySidebar"></div>
+
+<main class="main" id="main">
+
+    <div class="pagetitle">
+        <h1>餐品口味管理</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">主页</a></li>
+                <li class="breadcrumb-item">餐品种类管理</li>
+                <li class="breadcrumb-item active">餐品种类数据表</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <h1></h1>
+                        <button class="btn btn-warning btn" data-bs-target="#modalDialogScrollable2"
+                                data-bs-toggle="modal" type="button">新增餐品种类
+                        </button>
+
+                        <!-- 数据表格 -->
+                        <table class="table datatable">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">种类名称</th>
+                                <th scope="col">图片</th>
+                                <th scope="col">相关操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="kinds : ${kindsList}" th:id="'kinds' + ${kinds.id}">
+                                <th scope="row" th:text="${kinds.id}"></th>
+                                <td th:text="${kinds.name}"></td>
+                                <td>
+                                    <img th:height="30" th:src="'image'+${kinds.image}" th:width="30"/>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" data-bs-target="#modalDialogScrollable"
+                                            data-bs-toggle="modal"
+                                            th:onclick="showUpdate([[${kinds.id}]],[[${kinds.name}]],[[${kinds.image}]])"
+                                            type="button">修改
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" data-bs-target="#verticalycentered"
+                                            data-bs-toggle="modal"
+                                            th:onclick="showDelete([[${kinds.id}]])" type="button">删除
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table><!-- End 数据表格 -->
+
+                        <!-- 添加弹窗 -->
+                        <div class="modal fade" id="modalDialogScrollable2" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">添加新的餐品种类</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">新种类名称：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="insertName" type="text">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="imageShow">新种类图片：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="imageShow" name="image" type="file">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-sm-12" style="height: 470px;">
+                                                <!-- 用于显示上传后的图片 -->
+                                                <img alt="" height="470px" id="displayImage" width="470px"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doInsert()"
+                                                type="button">保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 添加弹窗 -->
+
+                        <!-- 修改弹窗 -->
+                        <div class="modal fade" id="modalDialogScrollable" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">修改餐品种类的信息</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="" class="card-img-top" id="updateImage">
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label" for="chooseImage">新种类图片：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" id="chooseImage" name="image" type="file">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label class="col-sm-3 col-form-label">新种类名称：</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" hidden id="updateId" type="text">
+                                                <input class="form-control" id="updateName" type="text">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doUpdate()"
+                                                type="button">保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 修改弹窗 -->
+
+                        <!-- 删除弹窗 -->
+                        <div class="modal fade" id="verticalycentered" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">⛔删除操作不可撤销，请谨慎操作！</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <img alt="..." class="card-img-top" src="assets/img/card.jpg">
+                                        </div>
+                                        <input hidden="hidden" id="deleteId" type="number">
+                                        您是否真的打算删除这条数据？？？
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">取消
+                                        </button>
+                                        <button class="btn btn-primary" data-bs-dismiss="modal" onclick="doDelete()"
+                                                type="button">确认
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End 删除弹窗 -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<div th:replace="systemFooter :: myFooter"></div>
+
+<div th:replace="systemFooter :: myGoToUp"></div>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
+<script src="assets/js/jquery.js"></script>
+<script>
+
+    // 添加功能里的虚假的图片上传(待修改)
+    $('#imageShow').on('change', function () {
+        let file = this.files[0];
+        $('#displayImage').attr('src', 'image/avatar/' + file.name).show();
+    });
+
+    // 修改功能里的虚假的图片上传(待修改)
+    $('#chooseImage').on('change', function () {
+        let file = this.files[0];
+        $('#updateImage').attr('src', 'image/avatar/' + file.name).show();
+    });
+
+    function doInsert() {
+        $.ajax({
+            type: 'POST',
+            url: '/doInsertKinds',
+            data: {
+                "name": $('#insertName').val(),
+                "image": $('#imageShow').val()
+            },
+            success: function (data) {
+                if (data.status) {
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                        window.location.href = "/goToMealsKinds";   // 目前相当于刷新页面
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function showUpdate(id, name, image) {
+        $('#updateId').val(id);
+        $('#updateName').val(name);
+        $('#updateImage').attr('src', 'image' + image);
+    }
+
+    function doUpdate() {
+
+        let redAlert = $('#redAlert');      // 警告的弹出层(使用比较多，单独定义了一个变量)
+
+        $.ajax({
+            type: 'POST',
+            url: '/doUpdateKinds',
+            data: {
+                "id": $('#updateId').val(),
+                "name": $('#updateName').val(),
+                "image": $('#chooseImage').val()
+            },
+            success: function (data) {
+                if (data.status) {
+                    // 这里更新一下表格中的对应的数据
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                        window.location.href = "/goToMealsKinds";   // 目前相当于刷新页面
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+
+    function showDelete(id) {
+        $('#deleteId').val(id);
+    }
+
+    function doDelete() {
+
+        $.ajax({
+            type: 'POST',
+            url: '/doDeleteKinds',
+            data: {
+                "id": $('#deleteId').val()
+            },
+            success: function (data) {
+                if (data.status) {
+                    $('#kinds' + $('#deleteId').val()).remove();     // 移除被删除的数据行
+                    $('#greenInfo').text(data.message);
+                    $('#greenAlert').show();
+                    setTimeout(function () {
+                        $('#greenAlert').hide();
+                    }, 2000);
+                } else {
+                    $('#redInfo').text(data.message);
+                    $('#redAlert').show();
+                    setTimeout(function () {
+                        $('#redAlert').hide();
+                    }, 2000);
+                }
+            },
+            error: function () {
+                $('#redInfo').text('系统提示：Ajax请求出错了哦！');
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        });
+    }
+</script>

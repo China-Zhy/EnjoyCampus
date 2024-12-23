@@ -16,7 +16,7 @@ import lombok.ToString;
 public class Meals {
     private int id;                 // 餐品编号
     private String name;            // 餐品名称
-    private double price;            // 餐品价格
+    private double price;           // 餐品价格
     private String materials;       // 餐品原料
     private String flavors;         // 风味类型
     private String image;           // 餐品图片

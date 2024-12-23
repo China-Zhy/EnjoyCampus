@@ -3,7 +3,7 @@
 <mapper namespace="nxu.dao.CommentsMapper">
 
     <insert id="insert">
-        insert into `comments` values(null, #{user}, #{meals}, #{rate}, #{info}, #{image}, NOW())
+        insert into `comments` values(null, #{user}, #{meals}, #{rate}, #{info}, #{image}, NOW(), 1)
     </insert>
 
     <delete id="delete">
@@ -19,8 +19,15 @@
             <if test="meals != '' and meals != null">
                 and meals = #{meals}
             </if>
+            <if test="state != '' and state != null">
+                and state = #{state}
+            </if>
         </where>
         order by id desc
     </select>
+
+    <update id="updateComments">
+        update `comments` set state=#{state} where id = #{id}
+    </update>
 
 </mapper>

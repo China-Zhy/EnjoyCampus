@@ -60,4 +60,16 @@ public class CommentsServiceImpl implements CommentsService {
             return new PageInfo<>(commentsMapper.selectComments(map));    // 不分页查询
         }
     }
+
+    /**
+     * 更改评论状态
+     *
+     * @param id    评论编号
+     * @param state 评论状态
+     * @return 更改结果
+     */
+    @Override
+    public int updateComments(int id, int state) {
+        return commentsMapper.updateComments(id, state);
+    }
 }

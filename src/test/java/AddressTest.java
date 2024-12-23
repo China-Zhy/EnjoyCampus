@@ -20,16 +20,30 @@ public class AddressTest extends BaseTest {
     @Test
     public void test1() {
         Address address = new Address();
-        address.setEntity(5);
-        address.setSchool(new School(1, ""));
-        address.setCampus(new Campus(1, "", 1));
-        address.setBuilding(new Building(1, "", 1));
-        address.setDetail("测试地址");
-        address.setConsignee("奥特曼");
-        address.setPhone("18812345678");
-        address.setType(1);
-        int insert = addressService.insert(address);
-        System.out.println(insert);
+
+        // 批量添加餐品地址
+        int i;
+        for (i = 4; i <= 200; i++) {
+            address.setEntity(i);
+            address.setSchool(new School(1, ""));
+            address.setCampus(new Campus((i % 3 + 1), "", 1));
+            address.setBuilding(new Building((30 + (i % 3 + 1)), "", (i % 3 + 1)));
+            address.setDetail("00" + (i % 3 + 1) + "号窗口");
+            if (i % 3 == 0) {
+                address.setConsignee("李阿姨");
+                address.setPhone("15012345678");
+            } else if (i % 3 == 1) {
+                address.setConsignee("刘阿姨");
+                address.setPhone("15087654321");
+            } else if (i % 3 == 2) {
+                address.setConsignee("王师傅");
+                address.setPhone("15098765432");
+            }
+            address.setType(2);
+            int insert = addressService.insert(address);
+            System.out.println(insert);
+        }
+
     }
 
     @Test

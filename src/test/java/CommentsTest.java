@@ -18,7 +18,7 @@ public class CommentsTest extends BaseTest {
 
     @Test
     public void test1() {
-        int insert = commentsService.insert(new Comments(0, 5, 1, 4, "味道超级棒，份量超级足！", "comments3.png", null));
+        int insert = commentsService.insert(new Comments(0, 5, 1, 4, "味道超级棒，份量超级足！", "comments3.png", null, 1));
         System.out.println(insert);
     }
 
@@ -40,6 +40,12 @@ public class CommentsTest extends BaseTest {
         for (Comments comments : commentsPageInfo.getList()) {
             System.out.println(comments);
         }
+    }
+
+    @Test
+    public void test4() {
+        int i = commentsService.updateComments(3, 2);
+        System.out.println(i);
     }
 
 }
