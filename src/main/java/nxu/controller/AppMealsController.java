@@ -1,16 +1,17 @@
 package nxu.controller;
 
+import com.github.pagehelper.PageInfo;
 import nxu.entity.Kinds;
 import nxu.entity.Meals;
 import nxu.service.KindsService;
 import nxu.service.MealsService;
+import nxu.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,39 +29,18 @@ public class AppMealsController {
     @Autowired
     private KindsService kindsService;
 
-    // APP 点餐页面 的 顶部轮播图
-    @GetMapping("/getSwipes")
-    public Map<String, Object> getSwipes() {
-        System.out.println("App 发起轮播请求");
-        Map<String, Object> map = new HashMap<>();
-        List<String> swipes = new ArrayList<>();
-        swipes.add("苹果");
-        swipes.add("香蕉");
-        swipes.add("毛桃");
-        map.put("fruitList", swipes);
-        return map;
-    }
+    @Autowired
+    private OrderService orderService;
 
     // APP 点餐页面 的 餐品分类导航数据
-    @GetMapping("/getKinds")
-    public List<Kinds> getKinds() {
+    @GetMapping("/getAppKinds")
+    public List<Kinds> getAppKinds() {
         return kindsService.selectAllKinds();
     }
 
-    // APP 点餐页面 的 某类餐品信息
-    @GetMapping("/getKindMeals")
-    public List<Meals> getKindMeals(Integer type) {
-        System.out.println("接收到了餐品分类请求！type:" + type);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("type", type);
-        return mealsService.getMeals(map).getList();
-    }
-
-    // APP 点餐页面 的 推荐餐品的数据以及根据名称搜索餐品和根据分类搜索餐品
-    @PostMapping("/getHotMeals")
-    public List<Meals> getMeals(@RequestBody Map<String, Object> params) {
-
-        System.out.println("接收到了" + params);
+    // APP 点餐页面 的 推荐餐品的数据、某类餐品的数据、根据名称搜索餐品的数据
+    @PostMapping("/getAppMealsData")
+    public PageInfo<Meals> getAppMealsData(@RequestBody Map<String, Object> params) {
 
         Map<String, Object> map = new HashMap<>();
 
@@ -79,9 +59,20 @@ public class AppMealsController {
         if (params.containsKey("type")) {
             map.put("type", Integer.parseInt(params.get("type").toString()));
         }
+        return mealsService.getMeals(map);
+    }
 
-        System.out.println("餐品请求的参数：" + map);
+    // APP 点餐页面 的 点击某个餐品后显示的餐品详情信息
+    @GetMapping("/getAppMealsData")
+    public Meals getAppMealsData(int id) {
+        return mealsService.selectOneMeal(id);
+    }
 
-        return mealsService.getMeals(map).getList();
+    // APP 点餐页面 的 确认订单功能(存储订单信息)
+    @PostMapping("/insertAppMealsOrder")
+    public boolean insertAppMealsOrder(@RequestBody Map<String, Object> params) {
+        // 未完待续。。。
+        System.out.println(params);
+        return true;
     }
 }

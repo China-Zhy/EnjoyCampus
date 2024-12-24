@@ -19,9 +19,9 @@ public class MealsTest extends BaseTest {
     @Test
     public void test1() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("name", "西");
-        map.put("pageNum", 1);
-        map.put("pageSize", 2);
+        map.put("name", "鸡");
+        map.put("pageNum", 2);
+        map.put("pageSize", 10);
         map.put("type", 1);
         PageInfo<Meals> meals = mealsService.getMeals(map);
         for (Meals meal : meals.getList()) {

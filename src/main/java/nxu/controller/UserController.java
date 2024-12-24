@@ -48,19 +48,27 @@ public class UserController {
             map.put("message", "系统提示：该手机号尚未注册！");
         } else {
             if (user.getPassword().equals(password)) {
-                System.out.println("Tips:登录的用户信息：" + user);
-                map.put("status", 2);
-                map.put("message", "系统提示：登录成功，欢迎您！");
-                session.setAttribute("user", user);     // 把用户数据存入Session
 
-                List<Identity> identities = identityService.selectAll();
-                session.setAttribute("identityList", identities);   // 把身份类型也存入Session
+                // 权限控制(后续可改写到数据库中，能通过后台管理进行修改)
+                if (user.getIdentity().getId() == 4 || user.getIdentity().getId() == 5) {
+                    map.put("status", 0);
+                    map.put("message", "系统提示：您没有后台管理权限！无法进入！");
+                } else {
+                    map.put("status", 2);
+                    map.put("message", "系统提示：登录成功，欢迎您！");
+                    session.setAttribute("user", user);     // 把用户数据存入Session
 
-                List<Kinds> kinds = kindsService.selectAllKinds();
-                session.setAttribute("kindsList", kinds);   // 把餐品种类也存入Session
+                    List<Identity> identities = identityService.selectAll();
+                    session.setAttribute("identityList", identities);   // 把身份类型也存入Session
 
-                List<Taste> tastes = tasteService.selectAllTaste();
-                session.setAttribute("tasteList", tastes);  // 把餐品口味也存入Session
+                    List<Kinds> kinds = kindsService.selectAllKinds();
+                    session.setAttribute("kindsList", kinds);   // 把餐品种类也存入Session
+
+                    List<Taste> tastes = tasteService.selectAllTaste();
+                    session.setAttribute("tasteList", tastes);  // 把餐品口味也存入Session
+
+                    System.out.println("Tips:登录的用户信息：" + user);
+                }
             } else {
                 map.put("status", 3);
                 map.put("message", "系统提示：输入的密码不正确！");
@@ -85,7 +93,7 @@ public class UserController {
 
         if (isExists != null) {
             map.put("status", 1);
-            map.put("message", "系统提示：该手机号已被注册！");
+            map.put("message", "系统提示：该手机号已被注册！换个试试~");
         } else {
             user.setAvatar("/image/avatar/nxu.png");
             user.setGender(1);

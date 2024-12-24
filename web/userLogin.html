@@ -190,6 +190,12 @@
                         setTimeout(function () {
                             redAlert.hide();
                         }, 2000);
+                    } else {
+                        $('#redInfo').text(data.message);
+                        redAlert.show();
+                        setTimeout(function () {
+                            redAlert.hide();
+                        }, 3000);
                     }
                 },
                 error: function () {
