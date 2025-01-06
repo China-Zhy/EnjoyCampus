@@ -3,11 +3,15 @@
 <mapper namespace="nxu.dao.MessageMapper">
 
     <insert id="insertMessage">
-        insert into `message` values(null, #{send}, #{receive}, #{content})
+        insert into `message` values(null, #{send}, #{receive}, #{content}, 0, NOW())
     </insert>
 
     <select id="selectMessage" resultType="Message">
         select * from `message` where send=#{send} and receive=#{receive}
     </select>
+
+    <update id="updateMessage">
+        update `message` set state = 1 where send=#{send} and receive=#{receive} and `when` &lt; NOW()
+    </update>
 
 </mapper>

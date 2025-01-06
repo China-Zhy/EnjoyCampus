@@ -60,7 +60,7 @@
 
     <insert id="insertMealsOrder">
         insert into `mealsorder`
-        values(null,#{user},#{errands},#{checkList},NOW(),NOW(),#{state},#{remarks})
+        values(null,#{user},#{errands},#{checkList},NOW(),NOW(),#{state},#{remarks},#{address})
     </insert>
 
     <update id="updateMealsOrder">
@@ -76,7 +76,10 @@
                 state = #{state},
             </if>
             <if test="remarks != '' and remarks != null">
-                remarks = #{remarks}
+                remarks = #{remarks},
+            </if>
+            <if test="address != null">
+                address = #{address}
             </if>
             where id = #{id}
         </set>

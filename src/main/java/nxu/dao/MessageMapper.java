@@ -27,4 +27,13 @@ public interface MessageMapper {
      * @return 消息集合
      */
     List<Message> selectMessage(@Param("send") int send, @Param("receive") int receive);
+
+    /**
+     * 将消息状态改为已读
+     *
+     * @param send    发送用户编号
+     * @param receive 接受用户编号
+     * @return 修改数据数量
+     */
+    int updateMessage(@Param("send") int send, @Param("receive") int receive);
 }

@@ -47,7 +47,7 @@ public class OrderTest extends BaseTest {
 
     @Test
     public void test4() {
-        int i = orderService.insertMealsOrder(new MealsOrder(0, 5, 4, "1-2/2-1", null, null, 1, "快快配送"));
+        int i = orderService.insertMealsOrder(new MealsOrder(0, 5, 4, "1-2/2-1", null, null, 1, "快快配送", 0));
         System.out.println(i);
     }
 
@@ -67,11 +67,12 @@ public class OrderTest extends BaseTest {
     @Test
     public void test6() {
         MealsOrder mealsOrder = new MealsOrder();
-        mealsOrder.setId(2);
+        mealsOrder.setId(3);
         mealsOrder.setCheckList("3-3/4-4");
         mealsOrder.setEndTime(LocalDateTime.now());
         mealsOrder.setState(2);
-        mealsOrder.setRemarks("最新备注");
+        mealsOrder.setRemarks("最最新备注");
+        mealsOrder.setAddress(0);
         int i = orderService.updateMealsOrder(mealsOrder);
         System.out.println(i);
     }

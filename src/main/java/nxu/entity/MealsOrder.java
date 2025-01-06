@@ -24,4 +24,5 @@ public class MealsOrder {
     private LocalDateTime endTime;      // 签收时间
     private int state;                  // 配送状态(1-配送中，2-已送达，3-其他状况)
     private String remarks;             // 订单备注
+    private int address;                // 订单地址(0-不配送，非0-地址编号)
 }

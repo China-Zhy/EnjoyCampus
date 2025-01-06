@@ -40,4 +40,17 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> selectMessage(int send, int receive) {
         return messageMapper.selectMessage(send, receive);
     }
+
+    /**
+     * 将消息状态改为已读
+     *
+     * @param send    发送用户编号
+     * @param receive 接受用户编号
+     * @return 修改数据数量
+     */
+    @Override
+    public int updateMessage(int send, int receive) {
+        return messageMapper.updateMessage(send, receive);
+    }
+
 }

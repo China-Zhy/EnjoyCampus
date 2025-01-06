@@ -16,7 +16,7 @@ public class MessageTest extends BaseTest {
 
     @Test
     public void test1() {
-        int i = messageService.insertMessage(new Message(0, 1, 5, "好好学习哦"));
+        int i = messageService.insertMessage(new Message(0, 1, 5, "今天你努力了吗？", null, 0));
         System.out.println(i);
     }
 
@@ -26,6 +26,12 @@ public class MessageTest extends BaseTest {
         for (Message message : messages) {
             System.out.println(message);
         }
+    }
+
+    @Test
+    public void test3() {
+        int i = messageService.updateMessage(1, 5);
+        System.out.println(i);
     }
 
 }

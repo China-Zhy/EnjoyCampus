@@ -130,7 +130,7 @@
                                 <th scope="row" th:text="${meals.id}"></th>
                                 <td th:text="${meals.name}"></td>
                                 <td>
-                                    <img alt="" th:height="30" th:src="'image/meals/'+${meals.image}" th:width="30"/>
+                                    <img alt="" th:height="30" th:src="${meals.image}" th:width="30"/>
                                 </td>
                                 <td th:text="${meals.price}"></td>
                                 <td th:text="${#strings.abbreviate(meals.materials,13)}"></td>
@@ -407,7 +407,7 @@
             },
             success: function (data) {
 
-                $('#detailImage').attr('src', 'image/meals/' + data.meals.image);
+                $('#detailImage').attr('src', data.meals.image);
                 $('#detailId').val(data.meals.id);
                 $('#detailName').val(data.meals.name);
                 $('#detailPrice').val(data.meals.price);
@@ -440,7 +440,7 @@
             },
             success: function (data) {
 
-                $('#changeImage').attr('src', 'image/meals/' + data.meals.image);
+                $('#changeImage').attr('src', data.meals.image);
                 $('#updateId').val(data.meals.id);
                 $('#updateName').val(data.meals.name);
                 $('#updatePrice').val(data.meals.price);
@@ -449,7 +449,6 @@
                 $('#updateType').val(data.meals.type);
                 $('#updateDetail').val(data.meals.detail);
                 $('#updateAddress').val(data.meals.address.school.name + ' ' + data.meals.address.campus.name + ' ' + data.meals.address.building.name + ' ' + data.meals.address.detail);
-
 
                 // 遍历每个复选框
                 $("input[type='checkbox']").each(function () {
