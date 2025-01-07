@@ -29,6 +29,7 @@
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -138,7 +139,8 @@
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label" for="imageInfo">餐品图片：</label>
                                 <div class="col-sm-10">
-                                    <input class="form-control" id="imageInfo" name="image" type="file">
+                                    <input class="form-control" id="imageInfo" type="file">
+                                    <input class="form-control" hidden id="image" type="text">
                                 </div>
                             </div>
 
@@ -199,13 +201,85 @@
 
 </html>
 <script src="assets/js/jquery.js"></script>
+<script type="text/javascript">
+    const API_URL = 'https://pro.helloimg.com/api/v1';
+    const BEARER_TOKEN = 'Bearer 794|gjAblmkARN5TdwrvCMJWaILcWlQOdlj0HO9joZcG';
+
+    async function getUploadToken() {
+        try {
+            const response = await fetch(`${API_URL}/images/tokens`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': BEARER_TOKEN,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    num: 1, // 只请求一个Token
+                    seconds: 3600 // Token有效期为1小时
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('获取Token成功:', data);
+                return data.data.tokens[0].token;
+            } else {
+                const errorData = await response.json(); // 尝试解析错误信息
+                console.error('获取Token失败:', response.status, errorData.message || response.statusText);
+                return null;
+            }
+        } catch (error) {
+            console.error('发生错误:', error);
+            return null;
+        }
+    }
+
+    async function uploadImage() {
+
+        const fileInput = document.getElementById('imageInfo');
+        const file = fileInput.files[0];
+
+        if (!file) return alert("请选择一张图片");
+
+        const token = await getUploadToken();
+        if (!token) return alert("无法获取上传Token");
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('token', token);
+        formData.append('permission', 1); // 公开权限
+
+        try {
+            const response = await fetch(`${API_URL}/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': BEARER_TOKEN,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('上传成功:', data);
+                document.getElementById('image').value = data.data.links.url;
+                document.getElementById('displayImage').src = data.data.links.url;
+            } else {
+                const errorData = await response.json(); // 尝试解析错误信息
+                console.error('上传失败:', response.status, errorData.message || response.statusText);
+            }
+        } catch (error) {
+            console.error('发生错误:', error);
+        }
+    }
+</script>
 <script>
     $(document).ready(function () {
 
-        // 虚假的图片上传(待修改)
         $('#imageInfo').on('change', function () {
-            let file = this.files[0];
-            $('#displayImage').attr('src', 'image/avatar/' + file.name).show();
+            uploadImage();
+            document.getElementById('image').value = data.data.links.url;
         });
 
         $('#mealsInfo').submit(function (e) {
@@ -227,7 +301,7 @@
                     "price": $('#price').val(),
                     "materials": $('#materials').val(),
                     "flavors": resultString,
-                    "image": $("#imageInfo").val(),
+                    "image": $("#image").val(),
                     "heft": $('#heft').val(),
                     "detail": $('#detail').val(),
                     "type": $('#type').val()

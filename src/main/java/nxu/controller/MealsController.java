@@ -113,8 +113,6 @@ public class MealsController {
     @ResponseBody
     public Map<String, Object> doInsertMeals(@ModelAttribute Meals meals) {
 
-        meals.setImage(meals.getImage().substring(meals.getImage().lastIndexOf("\\") + 1));
-
         int i = mealsService.insertMeals(meals);
 
         Map<String, Object> map = new HashMap<>();
