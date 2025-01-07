@@ -148,7 +148,7 @@
                                 <label class="col-sm-2 col-form-label" for="type"></label>
                                 <div class="col-sm-10">
                                     <div class="d-grid gap-2 mt-3">
-                                        <button class="btn btn-primary" type="submit">提交</button>
+                                        <button class="btn btn-primary" disabled id="submit" type="submit">提交</button>
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +201,8 @@
 
 </html>
 <script src="assets/js/jquery.js"></script>
-<script type="text/javascript">
+
+<script>
     const API_URL = 'https://pro.helloimg.com/api/v1';
     const BEARER_TOKEN = 'Bearer 794|gjAblmkARN5TdwrvCMJWaILcWlQOdlj0HO9joZcG';
 
@@ -263,23 +264,39 @@
             if (response.ok) {
                 const data = await response.json();
                 console.log('上传成功:', data);
+                $('#greenInfo').text('餐品图片上传成功！');
+                $('#greenAlert').show();
+                setTimeout(function () {
+                    $('#greenAlert').hide();
+                }, 2000);
                 document.getElementById('image').value = data.data.links.url;
                 document.getElementById('displayImage').src = data.data.links.url;
+
+                document.getElementById("myButton").disabled = false;   // 提交按钮变成可用
             } else {
                 const errorData = await response.json(); // 尝试解析错误信息
-                console.error('上传失败:', response.status, errorData.message || response.statusText);
+                console.error('图片上传失败:', response.status, errorData.message || response.statusText);
+                $('#redInfo').text('图片上传失败:', response.status, errorData.message || response.statusText);
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
             }
         } catch (error) {
-            console.error('发生错误:', error);
+            $('#redInfo').text('发生错误:', error);
+            $('#redAlert').show();
+            setTimeout(function () {
+                $('#redAlert').hide();
+            }, 3000);
         }
     }
 </script>
+
 <script>
     $(document).ready(function () {
 
         $('#imageInfo').on('change', function () {
             uploadImage();
-            document.getElementById('image').value = data.data.links.url;
         });
 
         $('#mealsInfo').submit(function (e) {

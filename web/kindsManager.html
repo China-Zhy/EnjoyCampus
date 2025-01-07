@@ -136,6 +136,7 @@
                                             <label class="col-sm-3 col-form-label" for="imageShow">新种类图片：</label>
                                             <div class="col-sm-9">
                                                 <input class="form-control" id="imageShow" name="image" type="file">
+                                                <input class="form-control" hidden id="imageInsert" type="text">
                                             </div>
                                         </div>
 
@@ -174,7 +175,8 @@
                                         <div class="row mb-3">
                                             <label class="col-sm-3 col-form-label" for="chooseImage">新种类图片：</label>
                                             <div class="col-sm-9">
-                                                <input class="form-control" id="chooseImage" name="image" type="file">
+                                                <input class="form-control" id="chooseImage" type="file">
+                                                <input class="form-control" hidden id="imageUpdate" type="text">
                                             </div>
                                         </div>
 
@@ -254,18 +256,106 @@
 
 </html>
 <script src="assets/js/jquery.js"></script>
+
+<script>
+    const API_URL = 'https://pro.helloimg.com/api/v1';
+    const BEARER_TOKEN = 'Bearer 794|gjAblmkARN5TdwrvCMJWaILcWlQOdlj0HO9joZcG';
+
+    async function getUploadToken() {
+        try {
+            const response = await fetch(`${API_URL}/images/tokens`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': BEARER_TOKEN,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    num: 1, // 只请求一个Token
+                    seconds: 3600 // Token有效期为1小时
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('获取Token成功:', data);
+                return data.data.tokens[0].token;
+            } else {
+                const errorData = await response.json(); // 尝试解析错误信息
+                console.error('获取Token失败:', response.status, errorData.message || response.statusText);
+                return null;
+            }
+        } catch (error) {
+            console.error('发生错误:', error);
+            return null;
+        }
+    }
+
+    async function uploadImage(imageFile, imageShow, imageUrl) {
+
+        const fileInput = document.getElementById(imageFile);
+        const file = fileInput.files[0];
+
+        if (!file) return alert("请选择一张图片");
+
+        const token = await getUploadToken();
+        if (!token) return alert("无法获取上传Token");
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('token', token);
+        formData.append('permission', 1); // 公开权限
+
+        try {
+            const response = await fetch(`${API_URL}/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': BEARER_TOKEN,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('上传成功:', data);
+                $('#greenInfo').text('图片上传成功！');
+                $('#greenAlert').show();
+                setTimeout(function () {
+                    $('#greenAlert').hide();
+                }, 2000);
+                document.getElementById(imageUrl).value = data.data.links.url;  // 隐藏的图片URL
+                document.getElementById(imageShow).src = data.data.links.url;   // 回显的图片
+
+            } else {
+                const errorData = await response.json(); // 尝试解析错误信息
+                console.error('图片上传失败:', response.status, errorData.message || response.statusText);
+                $('#redInfo').text('图片上传失败:', response.status, errorData.message || response.statusText);
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        } catch (error) {
+            $('#redInfo').text('发生错误:', error);
+            $('#redAlert').show();
+            setTimeout(function () {
+                $('#redAlert').hide();
+            }, 3000);
+        }
+    }
+</script>
+
 <script>
 
-    // 添加功能里的虚假的图片上传(待修改)
+    // 添加功能里的图片上传
     $('#imageShow').on('change', function () {
-        let file = this.files[0];
-        $('#displayImage').attr('src', 'image/avatar/' + file.name).show();
+        uploadImage('imageShow', 'displayImage', 'imageInsert');
     });
 
-    // 修改功能里的虚假的图片上传(待修改)
+    // 修改功能里的图片上传
     $('#chooseImage').on('change', function () {
-        let file = this.files[0];
-        $('#updateImage').attr('src', 'image/avatar/' + file.name).show();
+        uploadImage('chooseImage', 'updateImage', 'imageUpdate');
     });
 
     function doInsert() {

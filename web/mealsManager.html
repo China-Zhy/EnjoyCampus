@@ -115,7 +115,7 @@
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">名称</th>
-                                <th scope="col">图片</th>
+                                <!-- <th scope="col">图片</th> -->
                                 <th scope="col">价格</th>
                                 <th scope="col">原料</th>
                                 <th scope="col">风味</th>
@@ -129,9 +129,9 @@
                             <tr th:each="meals : ${mealsList}" th:id="'meals' + ${meals.id}">
                                 <th scope="row" th:text="${meals.id}"></th>
                                 <td th:text="${meals.name}"></td>
-                                <td>
-                                    <img alt="" th:height="30" th:src="${meals.image}" th:width="30"/>
-                                </td>
+                                <!-- <td> -->
+                                <!--    <img alt="" th:height="30" th:src="${meals.image}" th:width="30"/> -->
+                                <!-- </td> -->
                                 <td th:text="${meals.price}"></td>
                                 <td th:text="${#strings.abbreviate(meals.materials,13)}"></td>
                                 <td th:text="${meals.flavors}"></td>
@@ -251,6 +251,7 @@
                                             <label class="col-sm-3 col-form-label" for="updateImage">餐品图片：</label>
                                             <div class="col-sm-9">
                                                 <input class="form-control" id="updateImage" name="image" type="file">
+                                                <input class="form-control" hidden id="image" type="text">
                                             </div>
                                         </div>
 
@@ -391,12 +392,97 @@
 
 </html>
 <script src="assets/js/jquery.js"></script>
+
 <script>
-    // 修改功能里的虚假的图片上传(待修改)
-    $('#updateImage').on('change', function () {
-        let file = this.files[0];
-        $('#changeImage').attr('src', 'image/avatar/' + file.name).show();
-    })
+    const API_URL = 'https://pro.helloimg.com/api/v1';
+    const BEARER_TOKEN = 'Bearer 794|gjAblmkARN5TdwrvCMJWaILcWlQOdlj0HO9joZcG';
+
+    async function getUploadToken() {
+        try {
+            const response = await fetch(`${API_URL}/images/tokens`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': BEARER_TOKEN,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    num: 1, // 只请求一个Token
+                    seconds: 3600 // Token有效期为1小时
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('获取Token成功:', data);
+                return data.data.tokens[0].token;
+            } else {
+                const errorData = await response.json(); // 尝试解析错误信息
+                console.error('获取Token失败:', response.status, errorData.message || response.statusText);
+                return null;
+            }
+        } catch (error) {
+            console.error('发生错误:', error);
+            return null;
+        }
+    }
+
+    async function uploadImage() {
+
+        const fileInput = document.getElementById('updateImage');
+        const file = fileInput.files[0];
+
+        if (!file) return alert("请选择一张图片");
+
+        const token = await getUploadToken();
+        if (!token) return alert("无法获取上传Token");
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('token', token);
+        formData.append('permission', 1); // 公开权限
+
+        try {
+            const response = await fetch(`${API_URL}/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': BEARER_TOKEN,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('上传成功:', data);
+                $('#greenInfo').text('餐品图片更新成功！');
+                $('#greenAlert').show();
+                setTimeout(function () {
+                    $('#greenAlert').hide();
+                }, 2000);
+                document.getElementById('image').value = data.data.links.url;
+                document.getElementById('changeImage').src = data.data.links.url;
+            } else {
+                const errorData = await response.json(); // 尝试解析错误信息
+                console.error('图片上传失败:', response.status, errorData.message || response.statusText);
+                $('#redInfo').text('图片上传失败:', response.status, errorData.message || response.statusText);
+                $('#redAlert').show();
+                setTimeout(function () {
+                    $('#redAlert').hide();
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('发生错误:', error);
+            $('#redInfo').text('发生错误:', error);
+            $('#redAlert').show();
+            setTimeout(function () {
+                $('#redAlert').hide();
+            }, 3000);
+        }
+    }
+</script>
+
+<script>
 
     function showDetail(id) {
         $.ajax({
@@ -472,6 +558,11 @@
         });
     }
 
+    // 修改功能里的图片上传
+    $('#updateImage').on('change', function () {
+        uploadImage();
+    })
+
     function doUpdate() {
 
         let redAlert = $('#redAlert');      // 警告的弹出层(使用比较多，单独定义了一个变量)
@@ -493,7 +584,7 @@
                 "price": $('#updatePrice').val(),
                 "materials": $('#updateMaterials').val(),
                 "flavors": resultString,
-                "image": $('#updateImage').val(),
+                "image": $('#image').val(),
                 "heft": $('#updateHeft').val(),
                 "detail": $('#updateDetail').val(),
                 "type": $('#updateType').val()
