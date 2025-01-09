@@ -21,9 +21,20 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
 
     /**
+     * 获取跑腿订单信息
+     *
+     * @param id 跑腿订单编号
+     * @return 跑腿订单实体类
+     */
+    @Override
+    public ErrandsOrder getOneErrandsOrder(int id) {
+        return orderMapper.getOneErrandsOrder(id);
+    }
+
+    /**
      * 查询跑腿订单
      *
-     * @param map 查询参数 meals、errands、pageNum、pageSize等
+     * @param map 查询参数 user、errands、pageNum、pageSize等
      * @return 跑腿订单集合
      */
     @Override
@@ -64,10 +75,23 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.deleteErrandsOrder(id);
     }
 
+    // -------------------------------------------------------------------------------------------------
+
+    /**
+     * 获取点餐订单信息
+     *
+     * @param id 点餐订单编号
+     * @return 点餐订单实体类
+     */
+    @Override
+    public MealsOrder getOneMealsOrder(int id) {
+        return orderMapper.getOneMealsOrder(id);
+    }
+
     /**
      * 查询餐品订单
      *
-     * @param map 查询参数 meals、user、pageNum、pageSize等
+     * @param map 查询参数 user、errands、pageNum、pageSize等
      * @return 餐品订单集合
      */
     @Override

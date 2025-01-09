@@ -66,8 +66,6 @@ public class UserController {
 
                     List<Taste> tastes = tasteService.selectAllTaste();
                     session.setAttribute("tasteList", tastes);  // 把餐品口味也存入Session
-
-                    System.out.println("Tips:登录的用户信息：" + user);
                 }
             } else {
                 map.put("status", 3);
@@ -80,7 +78,6 @@ public class UserController {
     @GetMapping("/doUserLogout")
     public String logout(HttpSession session) {
         session.invalidate();
-        System.out.println("Tips:用户已退出登录！");
         return "index";
     }
 

@@ -62,6 +62,13 @@
             <version>2.18.1</version>
         </dependency>
 
+        <!-- 对时间的序列化/反序列化配置 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.18.2</version>
+        </dependency>
+
         <!--页面模板引擎-->
         <dependency>
             <groupId>org.thymeleaf</groupId>

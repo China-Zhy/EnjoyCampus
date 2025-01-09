@@ -42,16 +42,7 @@
     </environments>
 
     <mappers>
-        <mapper resource="mapper/UserMapper.xml"/>
-        <mapper resource="mapper/AddressMapper.xml"/>
-        <mapper resource="mapper/MealsMapper.xml"/>
-        <mapper resource="mapper/KindsMapper.xml"/>
-        <mapper resource="mapper/CommentsMapper.xml"/>
-        <mapper resource="mapper/IdentityMapper.xml"/>
-        <mapper resource="mapper/TasteMapper.xml"/>
-        <mapper resource="mapper/AuditMapper.xml"/>
-        <mapper resource="mapper/OrderMapper.xml"/>
-        <mapper resource="mapper/MessageMapper.xml"/>
+        <package name="nxu.dao"/>
     </mappers>
 
 </configuration>

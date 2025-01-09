@@ -41,13 +41,13 @@ public class OrderTest extends BaseTest {
 
     @Test
     public void test3() {
-        int i = orderService.insertErrandsOrder(new ErrandsOrder(0, 5, 4, "a.png", "1-2/2-1", null, null, 1, "快快配送"));
+        int i = orderService.insertErrandsOrder(new ErrandsOrder(0, 5, 4, "a.png", "1-2/2-1", null, null, 1, "快快配送", 9.9));
         System.out.println(i);
     }
 
     @Test
     public void test4() {
-        int i = orderService.insertMealsOrder(new MealsOrder(0, 5, 4, "1-2/2-1", null, null, 1, "快快配送", 0));
+        int i = orderService.insertMealsOrder(new MealsOrder(0, 5, 4, "1-2/2-1", null, null, 1, "快快配送", 0, 9.9));
         System.out.println(i);
     }
 
@@ -60,6 +60,7 @@ public class OrderTest extends BaseTest {
         errandsOrder.setEndTime(LocalDateTime.now());
         errandsOrder.setState(2);
         errandsOrder.setRemarks("最新的备注信息");
+        errandsOrder.setPrice(8.8);
         int i = orderService.updateErrandsOrder(errandsOrder);
         System.out.println(i);
     }
@@ -70,9 +71,10 @@ public class OrderTest extends BaseTest {
         mealsOrder.setId(3);
         mealsOrder.setCheckList("3-3/4-4");
         mealsOrder.setEndTime(LocalDateTime.now());
-        mealsOrder.setState(2);
+        mealsOrder.setState(3);
         mealsOrder.setRemarks("最最新备注");
-        mealsOrder.setAddress(0);
+        mealsOrder.setAddress(1);
+        mealsOrder.setPrice(8.8);
         int i = orderService.updateMealsOrder(mealsOrder);
         System.out.println(i);
     }
@@ -87,6 +89,18 @@ public class OrderTest extends BaseTest {
     public void test8() {
         int i = orderService.deleteMealsOrder(2);
         System.out.println(i);
+    }
+
+    @Test
+    public void test9() {
+        MealsOrder oneMealsOrder = orderService.getOneMealsOrder(1);
+        System.out.println(oneMealsOrder);
+    }
+
+    @Test
+    public void test10() {
+        ErrandsOrder oneErrandsOrder = orderService.getOneErrandsOrder(1);
+        System.out.println(oneErrandsOrder);
     }
 
 }

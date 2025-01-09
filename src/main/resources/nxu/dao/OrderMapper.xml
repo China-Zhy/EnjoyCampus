@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="nxu.dao.OrderMapper">
 
+    <select id="getOneErrandsOrder" resultType="nxu.entity.ErrandsOrder">
+        select * from `errandsorder` where id = #{id}
+    </select>
+
     <select id="selectErrandsOrders" resultType="nxu.entity.ErrandsOrder">
         select * from `errandsorder`
         <where>
@@ -15,14 +19,17 @@
         order by id desc
     </select>
 
-    <insert id="insertErrandsOrder">
+    <insert id="insertErrandsOrder" useGeneratedKeys="true" keyProperty="id">
         insert into `errandsorder`
-        values(null,#{user},#{errands},#{voucher},#{checkList},NOW(),NOW(),#{state},#{remarks})
+        values(null,#{user},#{errands},#{voucher},#{checkList},NOW(),NOW(),#{state},#{remarks},#{price})
     </insert>
 
     <update id="updateErrandsOrder">
         update `errandsorder`
         <set>
+            <if test="errands != '' and errands != null">
+                errands = #{errands},
+            </if>
             <if test="voucher != '' and voucher != null">
                 voucher = #{voucher},
             </if>
@@ -36,7 +43,10 @@
                 state = #{state},
             </if>
             <if test="remarks != '' and remarks != null">
-                remarks = #{remarks}
+                remarks = #{remarks},
+            </if>
+            <if test="price != null">
+                price = #{price}
             </if>
             where id = #{id}
         </set>
@@ -45,6 +55,12 @@
     <delete id="deleteErrandsOrder">
         delete from `errandsorder` where id = #{id}
     </delete>
+
+    <!-- ################################################################ -->
+
+    <select id="getOneMealsOrder" resultType="nxu.entity.MealsOrder">
+        select * from `mealsorder` where id = #{id}
+    </select>
 
     <select id="selectMealsOrders" resultType="nxu.entity.MealsOrder">
         select * from `mealsorder`
@@ -58,9 +74,9 @@
         </where>
     </select>
 
-    <insert id="insertMealsOrder">
+    <insert id="insertMealsOrder" useGeneratedKeys="true" keyProperty="id">
         insert into `mealsorder`
-        values(null,#{user},#{errands},#{checkList},NOW(),NOW(),#{state},#{remarks},#{address})
+        values(null,#{user},#{errands},#{checkList},NOW(),NOW(),#{state},#{remarks},#{address},#{price})
     </insert>
 
     <update id="updateMealsOrder">
@@ -72,14 +88,17 @@
             <if test="endTime != null">
                 endTime = NOW(),
             </if>
-            <if test="state != '' and state != null">
+            <if test="state != null">
                 state = #{state},
             </if>
             <if test="remarks != '' and remarks != null">
                 remarks = #{remarks},
             </if>
             <if test="address != null">
-                address = #{address}
+                address = #{address},
+            </if>
+            <if test="price != null">
+                price = #{price}
             </if>
             where id = #{id}
         </set>

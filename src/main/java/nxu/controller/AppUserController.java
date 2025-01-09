@@ -36,7 +36,6 @@ public class AppUserController {
                 map.put("status", 2);
                 map.put("message", "系统提示：登录成功，欢迎您！");
                 map.put("user", user);
-                System.out.println("Tips:登录的APP用户信息：" + user);
             } else {
                 map.put("status", 3);
                 map.put("message", "系统提示：输入的密码不正确！");

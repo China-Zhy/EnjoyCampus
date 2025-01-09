@@ -16,13 +16,12 @@ import java.time.LocalDateTime;
 public class LocalDateTimeTypeHandler extends BaseTypeHandler<LocalDateTime> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, LocalDateTime parameter, JdbcType jdbcType) throws SQLException {
-        System.out.println("用到了时间转换器：parameter = " + parameter);
+        System.out.println("Tips:用到了时间转换器 " + parameter);
         ps.setTimestamp(i, java.sql.Timestamp.valueOf(parameter));
     }
 
     @Override
     public LocalDateTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        System.out.println("用到了时间转换器：" + rs.getString(columnName));
         java.sql.Timestamp timestamp = rs.getTimestamp(columnName);
         if (timestamp != null) {
             return timestamp.toLocalDateTime();

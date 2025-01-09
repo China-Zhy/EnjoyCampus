@@ -14,9 +14,17 @@ import java.util.Map;
 public interface OrderMapper {
 
     /**
+     * 获取跑腿订单信息
+     *
+     * @param id 跑腿订单编号
+     * @return 跑腿订单实体类
+     */
+    ErrandsOrder getOneErrandsOrder(@Param("id") Integer id);
+
+    /**
      * 查询跑腿订单
      *
-     * @param map 查询参数 meals、errands、pageNum、pageSize等
+     * @param map 查询参数 user、errands
      * @return 跑腿订单集合
      */
     List<ErrandsOrder> selectErrandsOrders(Map<String, Object> map);
@@ -45,10 +53,20 @@ public interface OrderMapper {
      */
     int deleteErrandsOrder(@Param("id") int id);
 
+    // -------------------------------------------------------------------
+
+    /**
+     * 获取点餐订单信息
+     *
+     * @param id 点餐订单编号
+     * @return 点餐订单实体类
+     */
+    MealsOrder getOneMealsOrder(@Param("id") Integer id);
+
     /**
      * 查询餐品订单
      *
-     * @param map 查询参数 meals、user、pageNum、pageSize等
+     * @param map 查询参数 user、errands
      * @return 餐品订单集合
      */
     List<MealsOrder> selectMealsOrders(Map<String, Object> map);
